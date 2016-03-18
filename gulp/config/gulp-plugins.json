@@ -1,0 +1,45 @@
+{
+  "stylelint": {
+    "configFile": "./gulp/config/style-lint.json"
+  },
+  "reporter": {
+    "clearMessages": true,
+	"throwError" : true,
+	"noIcon" : true,
+	"noPlugin" : true
+  },
+  "autoprefixer": {
+    "browsers": ["ie 8-10", "Last 2 Chrome versions"]
+  },
+  "minifyCSS": {
+    "compatibility": "ie8"
+  },
+  "eslint": {
+    "configFile": "./es-lint.json"
+  },
+  "minifyHTML": {
+    "collapseWhitespace": true,
+    "removeComments": true,
+    "minifyCSS": true
+  },
+  "gzipOptions": {
+    "append": false,
+    "extension": "gz",
+    "threshold": "1kb",
+    "level": 9
+  },
+  "browserSync": {
+    "proxy": "localhost/project-boilerplate/?make-sure-you-add-project-to-nginx",
+    "browsers": [
+      "Google Chrome Portable"
+    ]
+  },
+  "karma": {
+    "configFile": "\\plugins\\unit.karma.conf.js",
+    "browsers": ["PhantomJS"]
+  },
+  "protractor": {
+    "configFile": "./src/tests/e2e.protractor.conf.js"
+  },
+  "revOptions": {}
+}

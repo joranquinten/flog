@@ -1,0 +1,52 @@
+{
+  "env": {
+    "dev": {
+      "base": "./source/",
+      "dest": "./build/"
+    },
+    "prod": {
+      "base": "./source/",
+      "dest": "./build/"
+    }
+  },
+  "sourceFiles": {
+    "js": "**/*.js",
+    "css": "**/*.css",
+    "html" : "**/*.{html,htm}",
+    "images": "img/**/*.{gif,png,jpeg,jpg,svg}",
+    "zip": ["./build/**/*"],
+    "index": "_index.html"
+  },
+  "targetFolders": {
+    "js": "",
+    "css": "",
+    "html": "",
+    "images": "img/",
+    "revManifest": "./source/",
+    "zip": "./zip/"
+  },
+  "targetFiles": {
+    "css": "module.css",
+    "revManifest": "rev-manifest.json",
+    "zip": null,
+    "index": "index.html"
+  },
+  "watchFiles": {
+    "css": "**/*.{css,scss,sass}",
+    "js": "**/*.js",
+    "html": "*.{html,htm}",
+    "images": "img/**/*.{gif,png,jpeg,jpg,svg}"
+  },
+  "assets" : [
+    { "name" : "Font-awesome",
+      "searchPattern" : "**/*.{otf,eot,svg,ttf,woff,woff2}",
+      "folderFrom" : "../../vendor/trunk/font-awesome/4.4.0/",
+      "folderTo" : ""
+    },
+    { "name" : "Fonts huisstijl",
+      "searchPattern" : "**/*.{otf,eot,svg,ttf,woff,woff2}",
+      "folderFrom" : "../../vendor/trunk/huisstijl/v06/",
+      "folderTo" : ""
+    }
+  ]
+}

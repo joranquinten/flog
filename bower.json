@@ -1,0 +1,42 @@
+{
+  "name": "fLog",
+  "description": "Logging your lens settings",
+  "main": "",
+  "authors": [
+    "Joran Quinten"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/joranquinten/flog",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.5.0",
+    "angular-mocks": "^1.5.0",
+    "angular-route": "^1.5.0",
+    "angular-animate": "^1.5.0",
+    "angular-cookies": "^1.5.0",
+    "angular-ui-router": "^0.2.18",
+    "angular-i18n": "^1.5.0",
+    "angular-local-storage": "^0.2.4",
+    "angular-moment": "^0.10.3",
+    "angular-breadcrumb": "^0.4.1",
+    "angular-loading-bar": "^0.8.0",
+    "angular-toastr": "^1.7.0",
+    "font-awesome": "^4.5.0",
+    "moment": "momentjs#^2.12.0",
+    "foundation": "^5.5.3",
+    "foundation-sites": "^6.2.0"
+  },
+  "resolutions": {
+    "angular": "^1.2.9",
+    "moment": "^2.12.0"
+  },
+  "postinstall": "gulp wiredep"
+}
