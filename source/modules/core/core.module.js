@@ -7,9 +7,10 @@
 
       /* Angular Modules */
       'ngAnimate',
-      'toastr'
+      'toastr',
 
       /* vendor */
+      'mm.foundation'
 
       /* common modules */
 

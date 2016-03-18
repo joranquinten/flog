@@ -8,7 +8,7 @@
         'app.core',
 
         /* feature modules */
-        'app.dashboard'
+        'app.log'
     ]);
 
 })();

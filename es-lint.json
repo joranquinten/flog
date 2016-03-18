@@ -18,7 +18,7 @@
         "angular/controller-as": 2,
         "angular/controller-as-route": 2,
         "angular/controller-as-vm": [2, "vm"],
-        "angular/controller-name": [2, "/[A-Z].*Controller$/"],
+        "angular/controller-name": [0, "/[A-Z].*Controller$/"],
         "angular/deferred": 0,
         "angular/definedundefined": 2,
         "angular/di": [2, "function"],

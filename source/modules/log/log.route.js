@@ -3,29 +3,30 @@
   'use strict';
 
   angular
-    .module('app.dashboard')
+    .module('app.log')
     .config(config);
 
   /* @ngInject */
   function config($stateProvider, $urlRouterProvider) {
 
     addState();
+    addAsDefaultState();
 
     ///////////
 
     function addState() {
-      $stateProvider.state('dashboard', {
-        url: '/dashboard',
-        templateUrl: 'modules/dashboard/dashboard.html',
-        controller: 'dashboard as vm',
+      $stateProvider.state('log', {
+        url: '/log',
+        templateUrl: 'modules/log/log.html',
+        controller: 'log as vm',
         ncyBreadcrumb: {
-          label: 'Dashboard'
+          label: 'Log'
         }
       });
     }
 
     function addAsDefaultState() {
-      $urlRouterProvider.otherwise('dashboard');
+      $urlRouterProvider.otherwise('log');
     }
 
   }
