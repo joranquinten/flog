@@ -7,43 +7,42 @@
             <h1>Log</h1>
 
             <accordion close-others="true">
-                <accordion-group is-open="true">
+                <accordion-group>
                     <accordion-heading><i class="fa fa-camera fa-fw"></i> Camera</accordion-heading>
                     <fieldset>
                         <div>
                             <label for="cameraName">Which camera?</label>
-                            <input type="text" name="cameraName" id="cameraName" />
+                            <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" />
                             <br/>
                         </div>
                         <div>
                             <label for="lensName">Which lens</label>
-                            <input type="text" name="lensName" id="lensName" />
-                            {{vm.availableLenses}}
+                            <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" />
                             <br/>
                         </div>
                         <div>
                             <label for="filePattern">Filename pattern?</label>
-                            <input type="text" name="filePattern" id="filePattern" placeholder="DSC_####" />
+                            <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" />
                             <br/>
                         </div>
                     </fieldset>
                 </accordion-group>
-                <accordion-group>
+                <accordion-group is-open="true">
                     <accordion-heading><i class="fa fa-picture-o fa-fw"></i> Series</accordion-heading>
                     <fieldset>
                         <div>
                             <label for="seriesName">Series name?</label>
-                            <input type="text" name="seriesName" id="seriesName" />
+                            <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" />
                             <br/>
                         </div>
                         <div>
                             <label for="fileNumber">Starting number?</label>
-                            <input type="text" name="fileNumber" id="fileNumber" />
+                            <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" />
                             <br/>
                         </div>
-                        <div>
+                        <div ng-show="false">
                             <label for="location">Location (GPS required)?</label>
-                            <input type="text" name="location" id="location" />
+                            <input type="text" name="location" id="location" ng-model="vm.selectedLocation" />
                             <br/>
                         </div>
                     </fieldset>
@@ -53,25 +52,28 @@
                     <fieldset>
                         <div>
                             <label for="focalLength">Which focal length (mm)?</label>
-                            <input type="text" name="focalLength" id="focalLength" />
+                            <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" />
                             <br/>
                         </div>
 
                         <div>
                             <label for="focalDistance">Which focal distance (m)?</label>
-                            <input type="text" name="focalDistance" id="focalDistance" />
+                            <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" />
                             <br/>
                         </div>
 
                         <div>
                             <label for="apertureSize">Which aperture (f)?</label>
-                            <input type="text" name="apertureSize" id="apertureSize" />
-                            <br/>
+                            <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture">
+                                <option ng-repeat="aperture in vm.availableApertures">f/{{aperture}}</option>
+                            </select>
                         </div>
 
                     </fieldset>
                 </accordion-group>
             </accordion>
+
+            <div><button type="button" class="button round btn-info" ng-click="vm.snap()">Snap!</button></div>
 
 
             <button type="button" class="button btn-info" ng-click="vm.info()">Info</button>
