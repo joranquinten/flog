@@ -30,7 +30,7 @@
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
 
-        $sql = ' INSERT INTO snapshots ';
+        $sql  = ' INSERT INTO snapshots ';
         $sql .= ' (camera_name, lens_name, file_name, series_name, focal_length, focal_distance, aperture_size, file_date, location) ';
         $sql .= ' VALUES ';
         $sql .= ' ("'.$camera_name.'", "'.$lens_name.'", "'.$file_name.'", "'.$series_name.'", "'.$focal_length.'", "'.$focal_distance.'", "'. $aperture_size.'", "'.$file_date.'", "'. $location.'"); ';

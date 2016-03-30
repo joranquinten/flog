@@ -6,80 +6,75 @@
 
             <h1>Log</h1>
 
-            <accordion close-others="true">
-                <accordion-group>
-                    <accordion-heading><i class="fa fa-camera fa-fw"></i> Camera</accordion-heading>
-                    <fieldset>
-                        <div>
-                            <label for="cameraName">Which camera?</label>
-                            <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required />
-                            <br/>
-                        </div>
-                        <div>
-                            <label for="lensName">Which lens</label>
-                            <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" required />
-                            <br/>
-                        </div>
-                        <div>
-                            <label for="filePattern">Filename pattern?</label>
-                            <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
-                            <br/>
-                        </div>
-                    </fieldset>
-                </accordion-group>
-                <accordion-group is-open="vm.seriesOpen">
-                    <accordion-heading><i class="fa fa-picture-o fa-fw"></i> Series</accordion-heading>
-                    <fieldset>
-                        <div>
-                            <label for="seriesName">Series name?</label>
-                            <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" required />
-                            <br/>
-                        </div>
-                        <div>
-                            <label for="fileNumber">Starting number?</label>
-                            <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
-                            <br/>
-                        </div>
-                        <div ng-show="false">
-                            <label for="location">Location (GPS required)?</label>
-                            <input type="text" name="location" id="location" ng-model="vm.selectedLocation" />
-                            <br/>
-                        </div>
-                    </fieldset>
-                </accordion-group>
-                <accordion-group>
-                    <accordion-heading><i class="fa fa-cogs fa-fw"></i> Settings</accordion-heading>
-                    <fieldset>
-                        <div>
-                            <label for="focalLength">Which focal length (mm)?</label>
-                            <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
-                            <br/>
-                        </div>
+                <div class="row">
+                <accordion close-others="true">
+                    <accordion-group>
+                        <accordion-heading><i class="fa fa-camera fa-fw"></i> Camera</accordion-heading>
+                        <fieldset>
+                            <div>
+                                <label for="cameraName">Which camera?</label>
+                                <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required />
+                            </div>
+                            <div>
+                                <label for="lensName">Which lens</label>
+                                <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" required />
+                            </div>
+                            <div>
+                                <label for="filePattern">Filename pattern?</label>
+                                <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
+                            </div>
+                        </fieldset>
+                    </accordion-group>
+                    <accordion-group is-open="vm.seriesOpen">
+                        <accordion-heading><i class="fa fa-picture-o fa-fw"></i> Series</accordion-heading>
+                        <fieldset>
+                            <div>
+                                <label for="seriesName">Series name?</label>
+                                <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" required />
+                            </div>
+                            <div>
+                                <label for="fileNumber">Starting number?</label>
+                                <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
+                            </div>
+                            <div ng-show="false">
+                                <label for="location">Location (GPS required)?</label>
+                                <input type="text" name="location" id="location" ng-model="vm.selectedLocation" />
+                            </div>
+                        </fieldset>
+                    </accordion-group>
+                    <accordion-group>
+                        <accordion-heading><i class="fa fa-cogs fa-fw"></i> Settings</accordion-heading>
+                        <fieldset>
+                            <div>
+                                <label for="focalLength">Which focal length (mm)?</label>
+                                <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
+                            </div>
 
-                        <div>
-                            <label for="focalDistance">Which focal distance (m)?</label>
-                            <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" required />
-                            <br/>
-                        </div>
+                            <div>
+                                <label for="focalDistance">Which focal distance (m)?</label>
+                                <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" required />
+                            </div>
 
-                        <div>
-                            <label for="apertureSize">Which aperture (f)?</label>
-                            <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required>
-                                <option ng-repeat="aperture in vm.availableApertures" ng-value="{{aperture}}">f/{{aperture}}</option>
-                            </select>
-                        </div>
+                            <div>
+                                <label for="apertureSize">Which aperture (f)?</label>
+                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required>
+                                    <option ng-repeat="aperture in vm.availableApertures" ng-value="{{aperture}}">f/{{aperture}}</option>
+                                </select>
+                            </div>
 
-                    </fieldset>
-                </accordion-group>
-            </accordion>
-
-            <div>
-                <button type="button" class="button round btn-info" ng-click="vm.snap()">Snap!</button>
-                <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span>
+                        </fieldset>
+                    </accordion-group>
+                </accordion>
             </div>
 
-            <div>
-                <button type="button" class="button round btn-info" ng-click="vm.reset()">New series</button>
+            <div class="row">
+                <div class="small-12 large-6 columns small-centered">
+                    <button type="button" class="button round btn-info expand" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span></button>
+
+                </div>
+                <div class="small-12 large-6 columns centered text-center">
+                    <button type="button" class="button round btn-info" ng-click="vm.reset()">New series</button>
+                </div>
             </div>
 
 

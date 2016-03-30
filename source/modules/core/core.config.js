@@ -20,9 +20,9 @@
     function setToastrConfig() {
       angular.extend(toastrConfig, {
         closeButton: true,
-        positionClass: 'toast-bottom-right',
+        positionClass: 'toast-top-right',
         progressBar: true,
-        tapToDismiss: false
+        tapToDismiss: true
       });
     }
 

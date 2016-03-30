@@ -118,7 +118,6 @@
         vm.selectedFileNumber = parseInt(vm.selectedFileNumber + 1);
         vm.NumberOfSaved += 1;
 
-        console.log('Updating...')
     }
 
   }
