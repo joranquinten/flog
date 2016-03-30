@@ -12,32 +12,32 @@
                     <fieldset>
                         <div>
                             <label for="cameraName">Which camera?</label>
-                            <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" />
+                            <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required />
                             <br/>
                         </div>
                         <div>
                             <label for="lensName">Which lens</label>
-                            <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" />
+                            <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" required />
                             <br/>
                         </div>
                         <div>
                             <label for="filePattern">Filename pattern?</label>
-                            <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" />
+                            <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
                             <br/>
                         </div>
                     </fieldset>
                 </accordion-group>
-                <accordion-group is-open="true">
+                <accordion-group is-open="vm.seriesOpen">
                     <accordion-heading><i class="fa fa-picture-o fa-fw"></i> Series</accordion-heading>
                     <fieldset>
                         <div>
                             <label for="seriesName">Series name?</label>
-                            <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" />
+                            <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" required />
                             <br/>
                         </div>
                         <div>
                             <label for="fileNumber">Starting number?</label>
-                            <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" />
+                            <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
                             <br/>
                         </div>
                         <div ng-show="false">
@@ -52,20 +52,20 @@
                     <fieldset>
                         <div>
                             <label for="focalLength">Which focal length (mm)?</label>
-                            <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" />
+                            <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
                             <br/>
                         </div>
 
                         <div>
                             <label for="focalDistance">Which focal distance (m)?</label>
-                            <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" />
+                            <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" required />
                             <br/>
                         </div>
 
                         <div>
                             <label for="apertureSize">Which aperture (f)?</label>
-                            <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture">
-                                <option ng-repeat="aperture in vm.availableApertures">f/{{aperture}}</option>
+                            <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required>
+                                <option ng-repeat="aperture in vm.availableApertures" ng-value="{{aperture}}">f/{{aperture}}</option>
                             </select>
                         </div>
 
@@ -73,13 +73,14 @@
                 </accordion-group>
             </accordion>
 
-            <div><button type="button" class="button round btn-info" ng-click="vm.snap()">Snap!</button></div>
+            <div>
+                <button type="button" class="button round btn-info" ng-click="vm.snap()">Snap!</button>
+                <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span>
+            </div>
 
-
-            <button type="button" class="button btn-info" ng-click="vm.info()">Info</button>
-            <button type="button" class="button btn-success" ng-click="vm.success()"><i class="fa fa-check"></i> Success</button>
-            <button type="button" class="button btn-warning" ng-click="vm.warning()"><i class="fa fa-arrow-circle-left"></i> Warning</button>
-            <button type="button" class="button btn-danger" ng-click="vm.error()"><i class="fa fa-ban"></i> Error</button>
+            <div>
+                <button type="button" class="button round btn-info" ng-click="vm.reset()">New series</button>
+            </div>
 
 
         </div>
