@@ -9,6 +9,7 @@
       'ui.select',
       'ngAnimate',
       'ngSanitize',
+      'ngCookies',
       'toastr',
 
       /* vendor */

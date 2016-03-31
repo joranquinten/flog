@@ -7,15 +7,9 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log(toastr, logService, $http) {
+  function log($http, $cookies, toastr, logService) {
 
     var vm = this;
-    // vars
-
-    // functions
-    vm.availableCameras = availableCameras();
-    vm.availableLenses = availableLenses();
-    vm.availableApertures = availableApertures();
 
     vm.snap = snap;
     vm.reset = reset;
@@ -24,27 +18,47 @@
 
     ////////////////
 
-    function setInitValues(){
+    function setInitValues (clearValues) {
 
-        vm.selectedCamera = 'ILCE-6000';
-        vm.selectedLens = 'Samyang 12mm f/2.0 NCS CS Sony';
-        vm.selectedFilePattern = 'DSC_#####';
-        vm.selectedSeriesName = '';
-        vm.selectedFileNumber = '';
-        vm.selectedLocation = '';
-        vm.selectedFocalLength = '';
-        vm.selectedFocalDistance = '';
-        vm.selectedAperture = '';
+        vm.selectedCamera = $cookies.get('storedCamera') || 'ILCE-6000';
+        vm.selectedLens = $cookies.get('storedLens') || 'Samyang 12mm f/2.0 NCS CS Sony';
+        vm.selectedFilePattern = $cookies.get('storedFilePattern') || 'DSC_#####';
+        if (!clearValues) {
 
-        vm.seriesOpen = true;
-        vm.NumberOfSaved = 0;
+            vm.selectedSeriesName = $cookies.get('storedSeriesName') || '';
+            vm.selectedFileNumber = parseInt($cookies.get('storedFileNumber')) || '';
+            vm.selectedLocation = $cookies.get('storedLocation') || '';
+            vm.selectedFocalLength = parseInt($cookies.get('storedFocalLength')) || '';
+            vm.selectedFocalDistance = parseFloat($cookies.get('storedFocalDistance')) || '';
+            vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
+            vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
+
+        } else {
+
+            vm.selectedSeriesName = '';
+            vm.selectedFileNumber = '';
+            vm.selectedLocation = '';
+            vm.selectedFocalLength = '';
+            vm.selectedFocalDistance = '';
+            vm.selectedAperture = '';
+            vm.NumberOfSaved = 0;
+
+        }
+
+        vm.cameraOpen = isCameraOpen();
+        vm.seriesOpen = isSeriesOpen();
+        vm.settingsOpen = isSettingsOpen();
+
+        vm.availableCameras = availableCameras();
+        vm.availableLenses = availableLenses();
+        vm.availableApertures = availableApertures();
 
     }
 
-    function snap(){
-        toastr.info('Saving a snap from '+ vm.selectedCamera +' to series '+ vm.selectedSeriesName +'.');
+    //////////////////// Public
 
-        console.log(vm);
+    function snap () {
+        toastr.info('Saving a snap from '+ vm.selectedCamera +' to series '+ vm.selectedSeriesName +'.');
 
         if (fieldsAreValid()){
             snapSave();
@@ -53,30 +67,37 @@
         }
     }
 
-    function reset(){
+    function reset () {
         toastr.info('New series initialized, please recheck the values.');
-        setInitValues();
+        setInitValues(true);
     }
 
-    function availableCameras(){
+    //////////////////// Private functions
+
+    ////////// Data sources
+
+    function availableCameras () {
         return logService.getCameras();
     }
 
-    function availableLenses(){
+    function availableLenses () {
         return logService.getLenses();
     }
 
-    function availableApertures(){
+    function availableApertures () {
         return logService.getApertures();
     }
 
-    // internal functions
-    function fieldsAreValid(){
+    ////////// Form actions
+
+    function fieldsAreValid () {
         // if fails, return false;
         return true;
     }
 
-    function snapSave(){
+    function snapSave () {
+
+        setCookie();
 
         var fileName,
             prefix = vm.selectedFilePattern.split('#')[0],
@@ -113,10 +134,61 @@
 
     }
 
-    function snapUpdate(){
+    function snapUpdate () {
 
         vm.selectedFileNumber = parseInt(vm.selectedFileNumber + 1);
         vm.NumberOfSaved += 1;
+
+        $cookies.put('storedNumberOfSaved', vm.NumberOfSaved);
+
+    }
+
+    ////////// View settings
+
+    function isCameraOpen () {
+
+        if ( (vm.selectedCamera === '') || (vm.selectedLens === '') || (vm.selectedFilePattern === '') ) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    function isSeriesOpen () {
+
+        if ( (!vm.cameraOpen) && ( (vm.selectedSeriesName === '') || (vm.selectedFileNumber === '') ) ) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    function isSettingsOpen () {
+
+        if (!vm.cameraOpen && !vm.seriesOpen) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ////////// Local storage
+
+    function setCookie () {
+
+        $cookies.put('storedCamera', vm.selectedCamera);
+        $cookies.put('storedLens', vm.selectedLens);
+        $cookies.put('storedFilePattern', vm.selectedFilePattern);
+        $cookies.put('storedSeriesName', vm.selectedSeriesName);
+        $cookies.put('storedFileNumber', vm.selectedFileNumber);
+        $cookies.put('storedLocation', vm.selectedLocation);
+        $cookies.put('storedFocalLength', vm.selectedFocalLength);
+        $cookies.put('storedFocalDistance', vm.selectedFocalDistance);
+        $cookies.put('storedAperture', vm.selectedAperture);
+
+        $cookies.put('storedNumberOfSaved', vm.NumberOfSaved);
 
     }
 
