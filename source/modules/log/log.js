@@ -131,7 +131,6 @@
                 toastr.error('File '+ fileName +' not saved. Use offline storage?');
             });
 
-
     }
 
     function snapUpdate () {
