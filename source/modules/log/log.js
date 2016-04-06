@@ -7,7 +7,7 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $cookies, toastr, logService) {
+  function log($http, $cookies, toastr, devicesService) {
 
     var vm = this;
 
@@ -77,15 +77,15 @@
     ////////// Data sources
 
     function availableCameras () {
-        return logService.getCameras();
+        return devicesService.getCameras();
     }
 
     function availableLenses () {
-        return logService.getLenses();
+        return devicesService.getLenses();
     }
 
     function availableApertures () {
-        return logService.getApertures();
+        return devicesService.getApertures();
     }
 
     ////////// Form actions

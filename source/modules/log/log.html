@@ -13,11 +13,11 @@
                         <fieldset>
                             <div>
                                 <label for="cameraName">Which camera?</label>
-                                <input type="text" name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required />
+                                <select name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required ng-options="camera.value as camera.text for camera in vm.availableCameras"></select>
                             </div>
                             <div>
                                 <label for="lensName">Which lens</label>
-                                <input type="text" name="lensName" id="lensName" ng-model="vm.selectedLens" required />
+                                <select name="lensName" id="lensName" ng-model="vm.selectedLens" required ng-options="lens.value as lens.text for lens in vm.availableLenses | filter:{ compatibleCameras: vm.selectedCamera }:strict"></select>
                             </div>
                             <div>
                                 <label for="filePattern">Filename pattern?</label>
@@ -52,9 +52,7 @@
 
                             <div>
                                 <label for="apertureSize">Which aperture (f)?</label>
-                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required>
-                                    <option ng-repeat="aperture in vm.availableApertures" ng-value="{{aperture}}" ng-selected="{{vm.selectedAperture == aperture}}">f/{{aperture}}</option>
-                                </select>
+                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required ng-options="aperture.value as aperture.text for aperture in vm.availableApertures"></select>
                             </div>
 
                             <div>
