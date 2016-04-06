@@ -53,6 +53,8 @@
                             <div>
                                 <label for="apertureSize">Which aperture (f)?</label>
                                 <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required ng-options="aperture.value as aperture.text for aperture in vm.availableApertures"></select>
+                                min {{vm.minAperture}}<br/>
+                                max {{vm.maxAperture}}
                             </div>
 
                             <div>

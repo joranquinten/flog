@@ -53,6 +53,10 @@
         vm.availableLenses = availableLenses();
         vm.availableApertures = availableApertures();
 
+        vm.minAperture = minAperture();
+        vm.maxAperture = maxAperture();
+        vm.apertureInRange = apertureInRange();
+
     }
 
     //////////////////// Public
@@ -70,6 +74,32 @@
     function reset () {
         toastr.info('New series initialized, please recheck the values.');
         setInitValues(true);
+    }
+
+    // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
+    function minAperture() {
+        if (vm.selectedLens) {
+            // return min aperture for selected lens (property maxAperture!)
+            var obj = _.find(availableLenses(), function(o) { return (o.value == vm.selectedLens) });
+            return obj.maxAperture;
+        } else {
+            return Math.min.apply(Math,availableApertures().map(function(o){return o.value;}))
+        }
+    }
+
+    function maxAperture() {
+        if (vm.selectedLens) {
+            // return max aperture for selected lens (property maxAperture!)
+            var obj = _.find(availableLenses(), function(o) { return (o.value == vm.selectedLens) });
+            return obj.minAperture;
+
+        } else {
+            return Math.max.apply(Math,availableApertures().map(function(o){return o.value;}))
+        }
+    }
+
+    function apertureInRange() {
+        return true;
     }
 
     //////////////////// Private functions
