@@ -25,15 +25,16 @@
     $focal_distance = $data['focalDistance'];
     $aperture_size = $data['apertureSize'];
     $file_date = $data['fileDate'];
-    $location = $data['location'];
+    $locationLat = $data['locationLat'];
+    $locationLong = $data['locationLong'];
 
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
 
         $sql  = ' INSERT INTO snapshots ';
-        $sql .= ' (camera_name, lens_name, file_name, series_name, focal_length, focal_distance, aperture_size, file_date, location) ';
+        $sql .= ' (camera_name, lens_name, file_name, series_name, focal_length, focal_distance, aperture_size, file_date, locationLat, locationLong) ';
         $sql .= ' VALUES ';
-        $sql .= ' ("'.$camera_name.'", "'.$lens_name.'", "'.$file_name.'", "'.$series_name.'", "'.$focal_length.'", "'.$focal_distance.'", "'. $aperture_size.'", "'.$file_date.'", "'. $location.'"); ';
+        $sql .= ' ("'.$camera_name.'", "'.$lens_name.'", "'.$file_name.'", "'.$series_name.'", "'.$focal_length.'", "'.$focal_distance.'", "'. $aperture_size.'", "'.$file_date.'", "'. $locationLat.'", "'. $locationLong.'"); ';
 
         $dbh->query($sql);
         $dbh = null;

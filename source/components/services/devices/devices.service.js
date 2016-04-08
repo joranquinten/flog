@@ -42,7 +42,7 @@
                 { "value" : 1.4, "text" : "f/1.4"},
                 { "value" : 1.8, "text" : "f/1.8"},
                 { "value" : 2, "text" : "f/2"},
-                { "value" : 2.8, "text" : "f2.81"},
+                { "value" : 2.8, "text" : "f2.8"},
                 { "value" : 4, "text" : "f/4"},
                 { "value" : 5.6, "text" : "f/5.6"},
                 { "value" : 8, "text" : "f/8"},

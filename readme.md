@@ -15,14 +15,13 @@ First of all, a small introduction of the app. One of my hobbies is photography.
 
 These should be taken as notes, not as a definitive roadmap or logical order:
 
+- Map services to actual data sources
 - Detect location (lattitude, longitude) and store upon save.
 - Enable HDR settings/capabilities
 - Store available cameras in database, select from dropdown in app
                 - Add/Edit cameras
 - Store available lenses in database, select from dropdown in app
                 - Add/Edit lenses
-- Couple lenses to camera types
-- Couple lens and camera capabilites to limit available selections
 - Spice the interface up a notch, add animations
 - Normalize database, split into tables:
                 - Series
@@ -32,6 +31,10 @@ These should be taken as notes, not as a definitive roadmap or logical order:
                 - Snaps
 - Use of localStorage when no server is available (this means caching series and posting at a later moment)
 - Port to a native app? (Ionic?)
+
+### Done
+- Couple lenses to camera types
+- Couple lens and camera capabilites to limit available selections
 
 ---
 

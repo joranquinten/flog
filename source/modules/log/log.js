@@ -32,6 +32,9 @@
             vm.selectedFocalDistance = parseFloat($cookies.get('storedFocalDistance')) || '';
             vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
             vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
+            //vm.selectedLocationLat = $cookies.get('storedLocationLat') || '';
+            //vm.selectedLocationLong = $cookies.get('storedLocationLong') || '';
+            getLocation();
 
         } else {
 
@@ -42,12 +45,16 @@
             vm.selectedFocalDistance = '';
             vm.selectedAperture = '';
             vm.NumberOfSaved = 0;
+            getLocation();
 
         }
 
         vm.cameraOpen = isCameraOpen();
         vm.seriesOpen = isSeriesOpen();
         vm.settingsOpen = isSettingsOpen();
+
+        vm.selectedLocationLat;
+        vm.selectedLocationLong;
 
         vm.availableCameras = availableCameras();
         vm.availableLenses = availableLenses();
@@ -112,6 +119,38 @@
         return devicesService.getApertures();
     }
 
+    function getLocation() {
+
+        var lat = 0, long = 0;
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(locSucces);
+
+            function locSucces(position) {
+                $scope.$apply(function() {
+                    vm.selectedLocationLat = position.coords.latitude;
+                    vm.selectedLocationLong = position.coords.longitude;
+
+                    vm.locationMapURL = "https://maps.googleapis.com/maps/api/staticmap?center=" + position.coords.latitude + "," + position.coords.longitude + "&zoom=13&size=250x250&sensor=false";
+                });
+            }
+
+            function locError(error) {
+                toastr.error('Unable to resolve geolocation: ('+ error.code +') '+ error.message);
+            }
+
+            var locOptions = {
+                enableHighAccuracy: true,
+                maximumAge        : 30000,
+                timeout           : 27000
+            };
+
+            var wpid = navigator.geolocation.watchPosition(locSucces, locError, locOptions);
+
+        } else {
+            toastr.warning('No geolocation available.');
+        }
+    }
+
     ////////// Form actions
 
     function fieldsAreValid () {
@@ -139,7 +178,8 @@
                 "focalDistance" : vm.selectedFocalDistance,
                 "apertureSize" : vm.selectedAperture,
                 "fileDate" : null,
-                "location" : vm.selectedLocation
+                "locationLat" : vm.selectedLocationLat,
+                "locationLong" : vm.selectedLocationLong
             };
 
         $http({
@@ -232,6 +272,8 @@
         $cookies.put('storedFocalLength', vm.selectedFocalLength);
         $cookies.put('storedFocalDistance', vm.selectedFocalDistance);
         $cookies.put('storedAperture', vm.selectedAperture);
+        $cookies.put('storedLocationLat', vm.selectedLocationLat);
+        $cookies.put('storedLocationLong', vm.selectedLocationLong);
 
         $cookies.put('storedNumberOfSaved', vm.NumberOfSaved);
 
