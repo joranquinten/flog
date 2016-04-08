@@ -121,11 +121,9 @@
 
     function getLocation() {
 
-        var lat = 0, long = 0;
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(locSucces);
 
-            function locSucces(position) {
+            var locSuccess = function (position) {
                 $scope.$apply(function() {
                     vm.selectedLocationLat = position.coords.latitude;
                     vm.selectedLocationLong = position.coords.longitude;
@@ -134,9 +132,11 @@
                 });
             }
 
-            function locError(error) {
+            var locError = function (error) {
                 toastr.error('Unable to resolve geolocation: ('+ error.code +') '+ error.message);
             }
+
+            navigator.geolocation.getCurrentPosition(locSuccess);
 
             var locOptions = {
                 enableHighAccuracy: true,
@@ -144,7 +144,7 @@
                 timeout           : 27000
             };
 
-            var wpid = navigator.geolocation.watchPosition(locSucces, locError, locOptions);
+            var wpid = navigator.geolocation.watchPosition(locSuccess, locError, locOptions);
 
         } else {
             toastr.warning('No geolocation available.');
@@ -186,12 +186,12 @@
             method: 'POST',
             url: url,
             data: data
-            }).then(function successCallback(response) {
+            }).then(function successCallback() {
 
                 toastr.success('File '+ fileName +' saved.');
                 snapUpdate();
 
-            }, function errorCallback(response) {
+            }, function errorCallback() {
                 toastr.error('File '+ fileName +' not saved. Use offline storage?');
             });
 
@@ -253,8 +253,8 @@
 
     ////////// Watchers on the wall
 
-    $scope.$watch('vm.selectedLens', function(newValue, oldValue) {
-        // update the DOM with newValue
+    $scope.$watch('vm.selectedLens', function() {
+        // update the DOM with newValue instead of oldValue
         vm.minAperture = minAperture();
         vm.maxAperture = maxAperture();
     });

@@ -8,7 +8,8 @@
         "jasmine": true
     },
     "globals" : {
-      "angular": true
+      "angular": true,
+      "_" : true
     },
     "rules": {
         "no-undef": 1,
