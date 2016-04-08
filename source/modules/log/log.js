@@ -7,7 +7,7 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $cookies, toastr, devicesService) {
+  function log($http, $scope, $cookies, toastr, devicesService) {
 
     var vm = this;
 
@@ -20,8 +20,8 @@
 
     function setInitValues (clearValues) {
 
-        vm.selectedCamera = $cookies.get('storedCamera') || 'ILCE-6000';
-        vm.selectedLens = $cookies.get('storedLens') || 'Samyang 12mm f/2.0 NCS CS Sony';
+        vm.selectedCamera = $cookies.get('storedCamera') || '';
+        vm.selectedLens = $cookies.get('storedLens') || '';
         vm.selectedFilePattern = $cookies.get('storedFilePattern') || 'DSC_#####';
         if (!clearValues) {
 
@@ -55,7 +55,6 @@
 
         vm.minAperture = minAperture();
         vm.maxAperture = maxAperture();
-        vm.apertureInRange = apertureInRange();
 
     }
 
@@ -92,14 +91,9 @@
             // return max aperture for selected lens (property maxAperture!)
             var obj = _.find(availableLenses(), function(o) { return (o.value == vm.selectedLens) });
             return obj.minAperture;
-
         } else {
             return Math.max.apply(Math,availableApertures().map(function(o){return o.value;}))
         }
-    }
-
-    function apertureInRange() {
-        return true;
     }
 
     //////////////////// Private functions
@@ -174,6 +168,20 @@
 
     ////////// View settings
 
+    vm.apertureFilter = function (item) {
+        var aperture = parseFloat(item.value);
+        var min = parseFloat(vm.minAperture);
+        var max = parseFloat(vm.maxAperture);
+
+        if (!aperture) return false;
+
+        if(min && aperture < min) return false;
+        if(max && aperture > max) return false;
+
+        // else
+        return true;
+    };
+
     function isCameraOpen () {
 
         if ( (vm.selectedCamera === '') || (vm.selectedLens === '') || (vm.selectedFilePattern === '') ) {
@@ -202,6 +210,14 @@
             return false;
         }
     }
+
+    ////////// Watchers on the wall
+
+    $scope.$watch('vm.selectedLens', function(newValue, oldValue) {
+        // update the DOM with newValue
+        vm.minAperture = minAperture();
+        vm.maxAperture = maxAperture();
+    });
 
     ////////// Local storage
 
