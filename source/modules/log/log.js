@@ -7,7 +7,7 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, toastr, devicesService) {
+  function log($http, $scope, $cookies, toastr, devicesService, GoogleMapsInitializer) {
 
     var vm = this;
 
@@ -32,8 +32,6 @@
             vm.selectedFocalDistance = parseFloat($cookies.get('storedFocalDistance')) || '';
             vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
             vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
-            //vm.selectedLocationLat = $cookies.get('storedLocationLat') || '';
-            //vm.selectedLocationLong = $cookies.get('storedLocationLong') || '';
             getLocation();
 
         } else {
@@ -53,15 +51,9 @@
         vm.seriesOpen = isSeriesOpen();
         vm.settingsOpen = isSettingsOpen();
 
-        vm.selectedLocationLat;
-        vm.selectedLocationLong;
-
         vm.availableCameras = availableCameras();
         vm.availableLenses = availableLenses();
         vm.availableApertures = availableApertures();
-
-        vm.minAperture = minAperture();
-        vm.maxAperture = maxAperture();
 
     }
 
@@ -120,15 +112,46 @@
     }
 
     function getLocation() {
-
-        if (navigator.geolocation) {
+        var manualLocation = false;
+        if (navigator.geolocation && !manualLocation) {
 
             var locSuccess = function (position) {
                 $scope.$apply(function() {
-                    vm.selectedLocationLat = position.coords.latitude;
-                    vm.selectedLocationLong = position.coords.longitude;
 
-                    vm.locationMapURL = "https://maps.googleapis.com/maps/api/staticmap?center=" + position.coords.latitude + "," + position.coords.longitude + "&zoom=13&size=250x250&sensor=false";
+                    if (!manualLocation) {
+                        vm.selectedLocationLat = position.coords.latitude;
+                        vm.selectedLocationLong = position.coords.longitude;
+                    }
+
+                    GoogleMapsInitializer.mapsInitialized.then(function(){
+
+                        var mapOptions = {
+                            zoom: 15,
+                            center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
+                            mapTypeId: google.maps.MapTypeId.ROADMAP
+                        };
+
+                        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                        var marker = new google.maps.Marker({
+                            position: { lat: position.coords.latitude, lng: position.coords.longitude },
+                            map: map,
+                            draggable: true,
+                            title: 'This is you!'
+                        });
+
+                        google.maps.event.addListener(marker, 'dragend', function(e){
+
+                            manualLocation = true;
+
+                            vm.selectedLocationLat = e.latLng.lat().toFixed(7);
+                            vm.selectedLocationLong = e.latLng.lng().toFixed(7);
+
+                            console.log('Needs to update the viewModel after selecting new marker point');
+                            console.log('Check out https://angular-ui.github.io/angular-google-maps/#!/ or https://ngmap.github.io/');
+
+                        });
+
+                    });
                 });
             }
 

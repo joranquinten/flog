@@ -36,13 +36,12 @@
                                 <label for="fileNumber">Starting number?</label>
                                 <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
                             </div>
-                            <div>
+                            <div ng-if="vm.selectedLocationLat && vm.selectedLocationLong" >
                                 <label for="locationLat">Location (GPS required)?</label>
                                 <input type="text" name="locationLat" id="locationLat" ng-model="vm.selectedLocationLat" />
                                 <input type="text" name="locationongt" id="locationLong" ng-model="vm.selectedLocationLong" />
 
-                                <img ng-if="vm.locationMapURL" src="{{vm.locationMapURL}}" /><br/>
-
+                                <div id="map"></div>
                             </div>
                         </fieldset>
                     </accordion-group>
