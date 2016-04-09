@@ -7,12 +7,19 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, toastr, devicesService, GoogleMapsInitializer) {
+  function log($http, $scope, $cookies, $interval, toastr, devicesService, GoogleMapsInitializer) {
 
     var vm = this;
 
     vm.snap = snap;
     vm.reset = reset;
+
+    vm.availableCameras = [];
+    vm.availableLenses = [];
+    vm.availableApertures = [];
+
+    vm.getAvailableLenses = availableLenses;
+    vm.getAvailableApertures = availableApertures;
 
     setInitValues();
 
@@ -22,7 +29,7 @@
 
         vm.selectedCamera = $cookies.get('storedCamera') || '';
         vm.selectedLens = $cookies.get('storedLens') || '';
-        vm.selectedFilePattern = $cookies.get('storedFilePattern') || 'DSC_#####';
+        vm.selectedFilePattern = $cookies.get('storedFilePattern') || 'DSC#####';
         if (!clearValues) {
 
             vm.selectedSeriesName = $cookies.get('storedSeriesName') || '';
@@ -70,7 +77,7 @@
     }
 
     function reset () {
-        toastr.info('New series initialized, please recheck the values.');
+        toastr.info('New series initialized, please recheck the settings.');
         setInitValues(true);
     }
 
@@ -78,20 +85,20 @@
     function minAperture() {
         if (vm.selectedLens) {
             // return min aperture for selected lens (property maxAperture!)
-            var obj = _.find(availableLenses(), function(o) { return (o.value == vm.selectedLens) });
-            return obj.maxAperture;
-        } else {
-            return Math.min.apply(Math,availableApertures().map(function(o){return o.value;}))
+            var obj = _.find(vm.availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
+            return obj.min_aperture;
+        } else if (angular.isArray(vm.availableApertures)) {
+            return Math.min.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
         }
     }
 
     function maxAperture() {
-        if (vm.selectedLens) {
+        if (vm.selectedLens && vm.availableApertures) {
             // return max aperture for selected lens (property maxAperture!)
-            var obj = _.find(availableLenses(), function(o) { return (o.value == vm.selectedLens) });
-            return obj.minAperture;
-        } else {
-            return Math.max.apply(Math,availableApertures().map(function(o){return o.value;}))
+            var obj = _.find(vm.availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
+            return obj.max_aperture;
+        } else if (angular.isArray(vm.availableApertures)) {
+            return Math.max.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
         }
     }
 
@@ -100,15 +107,24 @@
     ////////// Data sources
 
     function availableCameras () {
-        return devicesService.getCameras();
+       return devicesService.getCameras().then(function(cameras) {
+            vm.availableCameras = cameras;
+            return vm.availableCameras;
+        });
     }
 
     function availableLenses () {
-        return devicesService.getLenses();
+       return devicesService.getLenses(vm.selectedCamera).then(function(lenses) {
+            vm.availableLenses = lenses;
+            return vm.availableLenses;
+        });
     }
 
     function availableApertures () {
-        return devicesService.getApertures();
+       return devicesService.getApertures(vm.selectedLens).then(function(apertures) {
+            vm.availableApertures = apertures;
+            return vm.availableApertures;
+        });
     }
 
     function getLocation() {
@@ -116,6 +132,8 @@
         if (navigator.geolocation && !manualLocation) {
 
             var locSuccess = function (position) {
+
+
                 $scope.$apply(function() {
 
                     if (!manualLocation) {
@@ -131,27 +149,44 @@
                             mapTypeId: google.maps.MapTypeId.ROADMAP
                         };
 
-                        var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-                        var marker = new google.maps.Marker({
-                            position: { lat: position.coords.latitude, lng: position.coords.longitude },
-                            map: map,
-                            draggable: true,
-                            title: 'This is you!'
+                        angular.element(document).ready(function () {
+
+                            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+                            var marker = new google.maps.Marker({
+                                position: { lat: position.coords.latitude, lng: position.coords.longitude },
+                                map: map,
+                                draggable: true,
+                                title: 'This is you!'
+                            });
+
+                            google.maps.event.addListener(marker, 'dragend', function(e){
+
+                                manualLocation = true;
+
+                                vm.selectedLocationLat = e.latLng.lat().toFixed(7);
+                                vm.selectedLocationLong = e.latLng.lng().toFixed(7);
+
+                                setMapToCenter();
+
+                                $scope.$apply();
+
+                                console.log('Check out https://angular-ui.github.io/angular-google-maps/#!/ or https://ngmap.github.io/');
+
+                            });
+
+                            function setMapToCenter(){
+                                if (map) {
+                                    var center = map.getCenter();
+                                    google.maps.event.trigger(map, "resize");
+                                    map.setCenter(center);
+                                }
+                            }
+
                         });
 
-                        google.maps.event.addListener(marker, 'dragend', function(e){
-
-                            manualLocation = true;
-
-                            vm.selectedLocationLat = e.latLng.lat().toFixed(7);
-                            vm.selectedLocationLong = e.latLng.lng().toFixed(7);
-
-                            console.log('Needs to update the viewModel after selecting new marker point');
-                            console.log('Check out https://angular-ui.github.io/angular-google-maps/#!/ or https://ngmap.github.io/');
-
-                        });
 
                     });
+
                 });
             }
 
@@ -230,20 +265,6 @@
     }
 
     ////////// View settings
-
-    vm.apertureFilter = function (item) {
-        var aperture = parseFloat(item.value);
-        var min = parseFloat(vm.minAperture);
-        var max = parseFloat(vm.maxAperture);
-
-        if (!aperture) return false;
-
-        if(min && aperture < min) return false;
-        if(max && aperture > max) return false;
-
-        // else
-        return true;
-    };
 
     function isCameraOpen () {
 

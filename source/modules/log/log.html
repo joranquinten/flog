@@ -11,17 +11,17 @@
                     <accordion-group is-open="vm.cameraOpen">
                         <accordion-heading><i class="fa fa-camera fa-fw"></i> Camera</accordion-heading>
                         <fieldset>
-                            <div>
+                            <div ng-if="vm.availableCameras">
                                 <label for="cameraName">Which camera?</label>
-                                <select name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required ng-options="camera.value as camera.text for camera in vm.availableCameras"></select>
-                            </div>
-                            <div>
-                                <label for="lensName">Which lens</label>
-                                <select name="lensName" id="lensName" ng-model="vm.selectedLens" required ng-options="lens.value as lens.text for lens in vm.availableLenses | filter:{ compatibleCameras: vm.selectedCamera }:strict"></select>
+                                <select name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required ng-options="camera.camera_id as camera.name for camera in vm.availableCameras" ng-change="vm.getAvailableLenses(vm.selectedCamera)"></select>
                             </div>
                             <div>
                                 <label for="filePattern">Filename pattern?</label>
                                 <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
+                            </div>
+                            <div ng-if="vm.availableLenses">
+                                <label for="lensName">Which lens</label>
+                                <select name="lensName" id="lensName" ng-model="vm.selectedLens" required ng-options="lens.lens_id as lens.name for lens in vm.availableLenses" ng-change="vm.getAvailableApertures(vm.selectedLens)"></select>
                             </div>
                         </fieldset>
                     </accordion-group>
@@ -53,9 +53,9 @@
                                 <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
                             </div>
 
-                            <div>
+                            <div ng-if="vm.availableApertures">
                                 <label for="apertureSize">Which aperture (f)?</label>
-                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required ng-options="aperture.value as aperture.text for aperture in vm.availableApertures | filter:vm.apertureFilter"></select>
+                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required ng-options="aperture.value as aperture.text for aperture in vm.availableApertures"></select>
                             </div>
 
                             <div>

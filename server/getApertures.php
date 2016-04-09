@@ -14,6 +14,12 @@
 
 // Get the data
 
+    // Read data
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body, true);
+
+    $lens_id = $_GET['lens_id'];
+
     $items = array();
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
@@ -22,14 +28,18 @@
         $sql .= ' FROM ';
         $sql .= '   apertures ';
         $sql .= ' WHERE 1 ';
+        if ($lens_id) {
+            $sql .= ' AND number >= IFNULL((SELECT min_aperture FROM lenses WHERE lens_id = "'. $lens_id .'"),0) ';
+            $sql .= ' AND number <= IFNULL((SELECT max_aperture FROM lenses WHERE lens_id = "'. $lens_id .'"),100) ';
+        }
         $sql .= ' ORDER BY number ASC ';
         $sql .= ' ; ';
 
         // Push to array, to print JSON from
         foreach($dbh->query($sql) as $row) {
             $item = array(
-                        'number' => $row[0],
-                        'name' => 'f/'. $row[0]
+                        'value' => $row[0],
+                        'text' => 'f/'. $row[0]
             );
             array_push($items, $item);
         }

@@ -14,6 +14,12 @@
 
 // Get the data
 
+    // Read data
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body, true);
+
+    $camera_id = $_GET['camera_id'];
+
     $items = array();
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
@@ -22,6 +28,9 @@
         $sql .= ' FROM ';
         $sql .= '   lenses ';
         $sql .= ' WHERE 1 ';
+        if ($camera_id){
+            $sql .= ' AND camera_id = "'.$camera_id.'" ';
+        }
         $sql .= ' ORDER BY name ASC ';
         $sql .= ' ; ';
 
