@@ -228,8 +228,8 @@
 
         var url = '../server/snapSave.php',
             data = {
-                "cameraName" : vm.selectedCamera,
-                "lensName" : vm.selectedLens,
+                "cameraId" : vm.selectedCamera,
+                "lensId" : vm.selectedLens,
                 "fileName" : fileName,
                 "seriesName" : vm.selectedSeriesName,
                 "focalLength" : vm.selectedFocalLength,
