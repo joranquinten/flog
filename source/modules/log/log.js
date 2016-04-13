@@ -7,12 +7,13 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, $interval, toastr, devicesService) {
+  function log($http, $scope, $cookies, $interval, $window, toastr, devicesService) {
 
     var vm = this;
 
     vm.snap = snap;
     vm.reset = reset;
+    vm.removeLocalData = removeLocalData;
 
     vm.availableCameras = [];
     vm.availableLenses = [];
@@ -57,6 +58,7 @@
         vm.cameraOpen = isCameraOpen();
         vm.seriesOpen = isSeriesOpen();
         vm.settingsOpen = isSettingsOpen();
+        vm.hasLocalData = hasLocalData();
 
         vm.availableCameras = availableCameras();
         vm.availableLenses = availableLenses();
@@ -79,6 +81,11 @@
     function reset () {
         toastr.info('New series initialized, please recheck the settings.');
         setInitValues(true);
+    }
+
+    function removeLocalData () {
+        $window.localStorage.removeItem('stagedSnaps');
+        toastr.info('Offline data purged.');
     }
 
     // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
@@ -201,7 +208,7 @@
 
         fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
 
-        var url = '../server/snapSave.php',
+        var url = '../server/snapSave.phpError',
             data = {
                 "cameraId" : vm.selectedCamera,
                 "lensId" : vm.selectedLens,
@@ -225,7 +232,8 @@
                 snapUpdate();
 
             }, function errorCallback() {
-                toastr.error('File '+ fileName +' not saved. Use offline storage?');
+                toastr.error('File '+ fileName +' not saved. Stored on device.');
+                snapSaveOffline(data);
             });
 
     }
@@ -237,6 +245,21 @@
 
         $cookies.put('storedNumberOfSaved', vm.NumberOfSaved);
 
+    }
+
+    ////////// Data settings
+
+    function snapSaveOffline (data) {
+
+        var a = [];
+        if ($window.localStorage.getItem('stagedSnaps') !== null) a = JSON.parse($window.localStorage.getItem('stagedSnaps'));
+        a.push(data);
+        $window.localStorage.setItem('stagedSnaps', JSON.stringify(a));
+
+    }
+
+    function hasLocalData () {
+      return ($window.localStorage.getItem('stagedSnaps') !== null);
     }
 
     ////////// View settings
