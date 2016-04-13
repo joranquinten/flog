@@ -3,6 +3,6 @@
   'use strict';
 
   angular
-    .module('app.log', ['ui.router']);
+    .module('app.log', ['ui.router', 'uiGmapgoogle-maps']);
 
 })();

@@ -7,7 +7,7 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, $interval, toastr, devicesService, GoogleMapsInitializer) {
+  function log($http, $scope, $cookies, $interval, toastr, devicesService) {
 
     var vm = this;
 
@@ -128,66 +128,41 @@
     }
 
     function getLocation() {
-        var manualLocation = false;
-        if (navigator.geolocation && !manualLocation) {
+        //var manualLocation = false;
+        if (navigator.geolocation) {
 
             var locSuccess = function (position) {
 
+                // Get default from API
+                var coords = position.coords;
+                vm.selectedLocationLat = coords.latitude;
+                vm.selectedLocationLong = coords.longitude;
 
-                $scope.$apply(function() {
-
-                    if (!manualLocation) {
-                        vm.selectedLocationLat = position.coords.latitude;
-                        vm.selectedLocationLong = position.coords.longitude;
+                vm.map = {
+                    center: {
+                        latitude: coords.latitude,
+                        longitude: coords.longitude
+                    },
+                    zoom: 8,
+                    options: {
+                        scrollwheel: false
                     }
+                };
 
-                    GoogleMapsInitializer.mapsInitialized.then(function(){
-
-                        var mapOptions = {
-                            zoom: 15,
-                            center: new google.maps.LatLng(position.coords.latitude, position.coords.longitude),
-                            mapTypeId: google.maps.MapTypeId.ROADMAP
-                        };
-
-                        angular.element(document).ready(function () {
-
-                            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
-                            var marker = new google.maps.Marker({
-                                position: { lat: position.coords.latitude, lng: position.coords.longitude },
-                                map: map,
-                                draggable: true,
-                                title: 'This is you!'
-                            });
-
-                            google.maps.event.addListener(marker, 'dragend', function(e){
-
-                                manualLocation = true;
-
-                                vm.selectedLocationLat = e.latLng.lat().toFixed(7);
-                                vm.selectedLocationLong = e.latLng.lng().toFixed(7);
-
-                                setMapToCenter();
-
-                                $scope.$apply();
-
-                                console.log('Check out https://angular-ui.github.io/angular-google-maps/#!/ or https://ngmap.github.io/');
-
-                            });
-
-                            function setMapToCenter(){
-                                if (map) {
-                                    var center = map.getCenter();
-                                    google.maps.event.trigger(map, "resize");
-                                    map.setCenter(center);
-                                }
-                            }
-
-                        });
-
-
-                    });
-
-                });
+                vm.marker = {
+                    id: 0,
+                    coords: {
+                        latitude: coords.latitude,
+                        longitude: coords.longitude
+                    },
+                    options: { draggable: true },
+                    events: {
+                        dragend: function (marker, eventName, args) {
+                            vm.selectedLocationLat = marker.getPosition().lat();
+                            vm.selectedLocationLong = marker.getPosition().lng();
+                        }
+                    }
+                };
             }
 
             var locError = function (error) {
