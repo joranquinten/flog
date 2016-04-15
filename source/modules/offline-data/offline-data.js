@@ -41,6 +41,44 @@
 
     function saveLocalData () {
         toastr.info('Should iterate over localStorage and address save-page. If successfull, remove from localStorage, otherwise keep.');
+
+        var a = [];
+            a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
+
+        angular.forEach(a, function(value, key) {
+            console.log(value, key)
+          saveLocalDataItem (value, key);
+        }, function(){ toastr.info('Done iterating'); });
+
+        function saveLocalDataItem (item, index) {
+
+            var url = '../server/snapSave.php',
+                data = {
+                    "cameraId" : item.cameraId,
+                    "lensId" : item.lensId,
+                    "fileName" : item.fileName,
+                    "seriesName" : item.seriesName,
+                    "focalLength" : item.focalLength,
+                    "focalDistance" : item.focalDistance,
+                    "apertureSize" : item.apertureSize,
+                    "fileDate" : item.fileDate,
+                    "locationLat" : item.locationLat,
+                    "locationLong" : item.locationLong
+                };
+
+            $http({
+                method: 'POST',
+                url: url,
+                data: data
+                }).then(function successCallback() {
+                    removeLocalDataItem (index);
+                    toastr.success('File '+ item.fileName +' saved.');
+                }, function errorCallback() {
+                    toastr.error('File '+ item.fileName +' not saved. Keep in offline data.');
+                });
+
+        }
+
     }
 
     //////////////////// Private functions

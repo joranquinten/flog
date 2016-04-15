@@ -88,7 +88,7 @@
 
     // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
     function minAperture() {
-        if (vm.selectedLens) {
+        if (vm.selectedLens && vm.availableApertures) {
             // return min aperture for selected lens (property maxAperture!)
             var obj = _.find(vm.availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
             return obj.min_aperture;
