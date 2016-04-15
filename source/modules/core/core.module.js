@@ -13,7 +13,8 @@
       'toastr',
 
       /* vendor */
-      'mm.foundation'
+      'mm.foundation',
+      'ncy-angular-breadcrumb'
 
       /* common modules */
 

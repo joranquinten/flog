@@ -1,0 +1,52 @@
+<div>
+
+    <div class="row margin-bottom sub-header">
+        <div class="col-xs-12 sub-header-col">
+            <div ncy-breadcrumb></div>
+
+            <h1>Offline data</h1>
+
+            <div ng-if="vm.hasLocalData">
+
+                <div class="row">
+
+                    <ul class="cards">
+                        <li class="card panel" ng-repeat="snap in vm.localData">
+                           <span class="card-title">{{snap.seriesName}} - {{snap.fileName}}</span>
+                           <table>
+                               <tr>
+                                   <td>Recorded:</td>
+                                   <td>{{snap.fileDate}}</td>
+                               </tr>
+                               <tr ng-if="snap.locationLat && snap.locationLong">
+                                   <td>Position:</td>
+                                   <td>{{snap.locationLat}}, {{snap.locationLong}}</td>
+                               </tr>
+                           </table>
+                           <button type="button" class="button tiny secondary" ng-click="vm.removeLocalDataItem($index)">Remove this item &times;</button>
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div class="row">
+                    <div class="small-12 large-6 columns centered">
+                        <button type="button" class="button round btn-info expand" ng-click="vm.saveLocalData()">Save offline data</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="small-12 large-6 columns centered">
+                        <button type="button" class="button round btn-info expand" ng-click="vm.removeLocalData()">Clear offline data</button>
+                    </div>
+                </div>
+
+            </div>
+            <div ng-if="!vm.hasLocalData">
+            No offline data
+            </div>
+
+
+        </div>
+    </div>
+</div>

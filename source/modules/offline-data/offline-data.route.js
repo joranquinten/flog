@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('app.log')
+    .module('app.offlineData')
     .config(config);
 
   /* @ngInject */
@@ -14,12 +14,12 @@
     ///////////
 
     function addState() {
-      $stateProvider.state('log', {
-        url: '/log',
-        templateUrl: 'modules/log/log.html',
-        controller: 'log as vm',
+      $stateProvider.state('offlinedata', {
+        url: '/offline-data',
+        templateUrl: 'modules/offline-data/offline-data.html',
+        controller: 'offlineData as vm',
         ncyBreadcrumb: {
-          label: 'Log'
+          label: 'Offline data'
         }
       });
     }

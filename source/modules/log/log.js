@@ -13,7 +13,6 @@
 
     vm.snap = snap;
     vm.reset = reset;
-    vm.removeLocalData = removeLocalData;
 
     vm.availableCameras = [];
     vm.availableLenses = [];
@@ -58,7 +57,6 @@
         vm.cameraOpen = isCameraOpen();
         vm.seriesOpen = isSeriesOpen();
         vm.settingsOpen = isSettingsOpen();
-        vm.hasLocalData = hasLocalData();
 
         vm.availableCameras = availableCameras();
         vm.availableLenses = availableLenses();
@@ -204,7 +202,8 @@
 
         var fileName,
             prefix = vm.selectedFilePattern.split('#')[0],
-            padding = vm.selectedFilePattern.replace(prefix,'').length;
+            padding = vm.selectedFilePattern.replace(prefix,'').length,
+            now = new Date();
 
         fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
 
@@ -217,7 +216,7 @@
                 "focalLength" : vm.selectedFocalLength,
                 "focalDistance" : vm.selectedFocalDistance,
                 "apertureSize" : vm.selectedAperture,
-                "fileDate" : null,
+                "fileDate" : now.toISOString(),
                 "locationLat" : vm.selectedLocationLat,
                 "locationLong" : vm.selectedLocationLong
             };
@@ -252,14 +251,11 @@
     function snapSaveOffline (data) {
 
         var a = [];
-        if ($window.localStorage.getItem('stagedSnaps') !== null) a = JSON.parse($window.localStorage.getItem('stagedSnaps'));
+        if ($window.localStorage.getItem('stagedSnaps') !== null) a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
         a.push(data);
-        $window.localStorage.setItem('stagedSnaps', JSON.stringify(a));
+        $window.localStorage.setItem('stagedSnaps', angular.toJson(a));
+        snapUpdate();
 
-    }
-
-    function hasLocalData () {
-      return ($window.localStorage.getItem('stagedSnaps') !== null);
     }
 
     ////////// View settings

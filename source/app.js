@@ -8,7 +8,9 @@
         'app.core',
 
         /* feature modules */
-        'app.log'
+        'app.dashboard',
+        'app.log',
+        'app.offlineData'
     ]);
 
 })();
