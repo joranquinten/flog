@@ -23,7 +23,8 @@
                                    <td>{{snap.locationLat}}, {{snap.locationLong}}</td>
                                </tr>
                            </table>
-                           <button type="button" class="button tiny secondary" ng-click="vm.removeLocalDataItem($index)">Remove this item &times;</button>
+                           <button type="button" class="button tiny success" ng-click="vm.saveLocalDataItem(snap, $index)">Save this item &#x2713;</button>
+                           <button type="button" class="button tiny alert" ng-click="vm.removeLocalDataItem($index)">Remove this item &times;</button>
                         </li>
                     </ul>
 

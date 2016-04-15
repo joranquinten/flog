@@ -38,6 +38,7 @@
             vm.selectedFocalLength = parseInt($cookies.get('storedFocalLength')) || '';
             vm.selectedFocalDistance = parseFloat($cookies.get('storedFocalDistance')) || '';
             vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
+            vm.snapNotes = $cookies.get('storedSnapNotes') || '';
             vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
             getLocation();
 
@@ -49,6 +50,7 @@
             vm.selectedFocalLength = '';
             vm.selectedFocalDistance = '';
             vm.selectedAperture = '';
+            vm.snapNotes = '';
             vm.NumberOfSaved = 0;
             getLocation();
 
@@ -67,8 +69,6 @@
     //////////////////// Public
 
     function snap () {
-        toastr.info('Saving a snap from '+ vm.selectedCamera +' to series '+ vm.selectedSeriesName +'.');
-
         if (fieldsAreValid()){
             snapSave();
         } else {
@@ -81,17 +81,13 @@
         setInitValues(true);
     }
 
-    function removeLocalData () {
-        $window.localStorage.removeItem('stagedSnaps');
-        toastr.info('Offline data purged.');
-    }
-
     // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
     function minAperture() {
         if (vm.selectedLens && vm.availableApertures) {
             // return min aperture for selected lens (property maxAperture!)
-            var obj = _.find(vm.availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
-            return obj.min_aperture;
+
+            var obj = _.find(availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
+            return (angular.isDefined(obj)) ? obj.min_aperture : false;
         } else if (angular.isArray(vm.availableApertures)) {
             return Math.min.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
         }
@@ -100,8 +96,8 @@
     function maxAperture() {
         if (vm.selectedLens && vm.availableApertures) {
             // return max aperture for selected lens (property maxAperture!)
-            var obj = _.find(vm.availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
-            return obj.max_aperture;
+            var obj = _.find(availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
+            return (angular.isDefined(obj)) ? obj.max_aperture : false;
         } else if (angular.isArray(vm.availableApertures)) {
             return Math.max.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
         }
@@ -133,7 +129,6 @@
     }
 
     function getLocation() {
-        //var manualLocation = false;
         if (navigator.geolocation) {
 
             var locSuccess = function (position) {
@@ -149,9 +144,7 @@
                         longitude: coords.longitude
                     },
                     zoom: 8,
-                    options: {
-                        scrollwheel: false
-                    }
+                    options: { scrollwheel: false }
                 };
 
                 vm.marker = {
@@ -171,7 +164,7 @@
             }
 
             var locError = function (error) {
-                toastr.error('Unable to resolve geolocation: ('+ error.code +') '+ error.message);
+                toastr.error('Unable to resolve geolocation: '+ error.message);
             }
 
             navigator.geolocation.getCurrentPosition(locSuccess);
@@ -205,20 +198,21 @@
             padding = vm.selectedFilePattern.replace(prefix,'').length,
             now = new Date();
 
-        fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
+            fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
 
-        var url = '../server/snapSave.phpError',
+        var url = '../server/snapSave.php',
             data = {
-                "cameraId" : vm.selectedCamera,
-                "lensId" : vm.selectedLens,
-                "fileName" : fileName,
-                "seriesName" : vm.selectedSeriesName,
-                "focalLength" : vm.selectedFocalLength,
-                "focalDistance" : vm.selectedFocalDistance,
-                "apertureSize" : vm.selectedAperture,
-                "fileDate" : now.toISOString(),
-                "locationLat" : vm.selectedLocationLat,
-                "locationLong" : vm.selectedLocationLong
+                "cameraId" : vm.selectedCamera || null,
+                "lensId" : vm.selectedLens || null,
+                "fileName" : fileName || null,
+                "seriesName" : vm.selectedSeriesName || null,
+                "focalLength" : vm.selectedFocalLength || null,
+                "focalDistance" : vm.selectedFocalDistance || null,
+                "apertureSize" : vm.selectedAperture || null,
+                "fileDate" : now.toISOString() || null,
+                "locationLat" : vm.selectedLocationLat || null,
+                "locationLong" : vm.selectedLocationLong || null,
+                "snapNotes" : vm.snapNotes || null
             };
 
         $http({
@@ -310,6 +304,7 @@
         $cookies.put('storedFocalLength', vm.selectedFocalLength);
         $cookies.put('storedFocalDistance', vm.selectedFocalDistance);
         $cookies.put('storedAperture', vm.selectedAperture);
+        $cookies.put('storedSnapNotes', vm.snapNotes);
         $cookies.put('storedLocationLat', vm.selectedLocationLat);
         $cookies.put('storedLocationLong', vm.selectedLocationLong);
 
