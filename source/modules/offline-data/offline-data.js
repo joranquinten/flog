@@ -7,7 +7,7 @@
     .controller('offlineData', offlineData);
 
   /* @ngInject */
-  function offlineData($http, $scope, $cookies, $window, toastr) {
+  function offlineData($scope, $cookies, $window, toastr, dataService) {
 
     var vm = this;
 
@@ -25,14 +25,8 @@
     //////////////////// Public
 
     function removeLocalDataItem (index) {
-        if (index > -1){
-            var a = [];
-            a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
-            a.splice(index, 1);
-            $window.localStorage.setItem('stagedSnaps', angular.toJson(a));
-            // reset
-            vm.localData = localData();
-        }
+        dataService.removeFromLocalData('stagedSnaps', index)
+        vm.localData = localData();
     }
 
     function removeLocalData () {
@@ -52,8 +46,7 @@
 
     function saveLocalDataItem (item, index) {
 
-        var url = '../server/snapSave.php',
-            data = {
+        var data = {
                 "cameraId" : item.cameraId || null,
                 "lensId" : item.lensId || null,
                 "fileName" : item.fileName || null,
@@ -67,16 +60,17 @@
                 "snapNotes" : item.snapNotes || null
             };
 
-        $http({
-            method: 'POST',
-            url: url,
-            data: data
-            }).then(function successCallback() {
+
+        dataService.saveSnap(
+            data,
+            function() {
                 removeLocalDataItem (index);
                 toastr.success('File '+ item.fileName +' saved.');
-            }, function errorCallback() {
+            },
+            function () {
                 toastr.error('File '+ item.fileName +' not saved. Keep in offline data.');
-            });
+            }
+        );
 
     }
 
@@ -88,22 +82,11 @@
 
     function localData () {
 
-        var a = [];
-        if ($window.localStorage.getItem('stagedSnaps') !== null) a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
-        return a;
+        return dataService.getFromLocalData('stagedSnaps');
 
     }
 
     ////////// Data settings
-
-    function snapSaveOffline (data) {
-
-        var a = [];
-        if ($window.localStorage.getItem('stagedSnaps') !== null) a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
-        a.push(data);
-        $window.localStorage.setItem('stagedSnaps', angular.toJson(a));
-
-    }
 
     function hasLocalData () {
       return ($window.localStorage.getItem('stagedSnaps') !== null);

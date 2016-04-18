@@ -7,7 +7,7 @@
     .config(config);
 
   /* @ngInject */
-  function config($stateProvider, $urlRouterProvider) {
+  function config($stateProvider) {
 
     addState();
 

@@ -1,8 +1,23 @@
+.angular-google-map-container {
+  height: 300px;
+}
 
-  #map {
-    width: 100%;
-    height: 400px;
-    background-color: #ccc;
-  }
+.has-error label {
+    color: crimson !important;
+}
 
-.angular-google-map-container { height: 400px; }
+.has-error input {
+    color: crimson !important;
+    border-color: crimson !important;
+}
+
+.form-msg {
+    display: none;
+    height: 0;
+    font-size: 0.8em;
+    color: #333;
+}
+
+.has-error .form-msg {
+    display: block;
+}

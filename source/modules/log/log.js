@@ -7,12 +7,13 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, $interval, $window, toastr, devicesService) {
+  function log($http, $scope, $cookies, $interval, $window, toastr, devicesService, dataService) {
 
     var vm = this;
 
     vm.snap = snap;
     vm.reset = reset;
+    vm.getLocation = getLocation;
 
     vm.availableCameras = [];
     vm.availableLenses = [];
@@ -40,7 +41,7 @@
             vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
             vm.snapNotes = $cookies.get('storedSnapNotes') || '';
             vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
-            getLocation();
+            //getLocation();
 
         } else {
 
@@ -52,13 +53,9 @@
             vm.selectedAperture = '';
             vm.snapNotes = '';
             vm.NumberOfSaved = 0;
-            getLocation();
+            //getLocation();
 
         }
-
-        vm.cameraOpen = isCameraOpen();
-        vm.seriesOpen = isSeriesOpen();
-        vm.settingsOpen = isSettingsOpen();
 
         vm.availableCameras = availableCameras();
         vm.availableLenses = availableLenses();
@@ -81,11 +78,69 @@
         setInitValues(true);
     }
 
+
+    function getLocation() {
+        if (navigator.geolocation) {
+
+            var locSuccess = function (position) {
+
+                // Get default from API
+                var coords = position.coords;
+                vm.selectedLocationLat = coords.latitude.toFixed(7);
+                vm.selectedLocationLong = coords.longitude.toFixed(7);
+                vm.accuracy = coords.accuracy;
+
+                vm.map = {
+                    center: {
+                        latitude: coords.latitude.toFixed(7),
+                        longitude: coords.longitude.toFixed(7)
+                    },
+                    zoom: 8,
+                    options: { scrollwheel: false }
+                };
+
+                vm.marker = {
+                    id: 0,
+                    coords: {
+                        latitude: coords.latitude,
+                        longitude: coords.longitude
+                    },
+                    options: { draggable: true },
+                    events: {
+                        dragend: function (marker) {
+                            vm.selectedLocationLat = marker.getPosition().lat().toFixed(7);
+                            vm.selectedLocationLong = marker.getPosition().lng().toFixed(7);
+                        }
+                    }
+                };
+
+                $scope.$apply();
+            }
+
+            var locError = function (error) {
+                toastr.error('Unable to resolve geolocation: '+ error.message);
+            }
+
+
+            var locOptions = {
+              enableHighAccuracy: true,
+              timeout: 5000,
+              maximumAge: 5000
+            };
+
+            navigator.geolocation.getCurrentPosition(locSuccess, locError, locOptions);
+
+            //var wpid = navigator.geolocation.watchPosition(locSuccess, locError, locOptions);
+
+        } else {
+            toastr.warning('No geolocation available.');
+        }
+    }
+
     // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
     function minAperture() {
         if (vm.selectedLens && vm.availableApertures) {
             // return min aperture for selected lens (property maxAperture!)
-
             var obj = _.find(availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
             return (angular.isDefined(obj)) ? obj.min_aperture : false;
         } else if (angular.isArray(vm.availableApertures)) {
@@ -128,65 +183,14 @@
         });
     }
 
-    function getLocation() {
-        if (navigator.geolocation) {
-
-            var locSuccess = function (position) {
-
-                // Get default from API
-                var coords = position.coords;
-                vm.selectedLocationLat = coords.latitude;
-                vm.selectedLocationLong = coords.longitude;
-
-                vm.map = {
-                    center: {
-                        latitude: coords.latitude,
-                        longitude: coords.longitude
-                    },
-                    zoom: 8,
-                    options: { scrollwheel: false }
-                };
-
-                vm.marker = {
-                    id: 0,
-                    coords: {
-                        latitude: coords.latitude,
-                        longitude: coords.longitude
-                    },
-                    options: { draggable: true },
-                    events: {
-                        dragend: function (marker, eventName, args) {
-                            vm.selectedLocationLat = marker.getPosition().lat();
-                            vm.selectedLocationLong = marker.getPosition().lng();
-                        }
-                    }
-                };
-            }
-
-            var locError = function (error) {
-                toastr.error('Unable to resolve geolocation: '+ error.message);
-            }
-
-            navigator.geolocation.getCurrentPosition(locSuccess);
-
-            var locOptions = {
-                enableHighAccuracy: true,
-                maximumAge        : 30000,
-                timeout           : 27000
-            };
-
-            var wpid = navigator.geolocation.watchPosition(locSuccess, locError, locOptions);
-
-        } else {
-            toastr.warning('No geolocation available.');
-        }
-    }
-
     ////////// Form actions
 
     function fieldsAreValid () {
         // if fails, return false;
-        return true;
+
+         console.log($scope.logForm.$valid)
+
+        return false;
     }
 
     function snapSave () {
@@ -200,8 +204,7 @@
 
             fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
 
-        var url = '../server/snapSave.php',
-            data = {
+        var data = {
                 "cameraId" : vm.selectedCamera || null,
                 "lensId" : vm.selectedLens || null,
                 "fileName" : fileName || null,
@@ -215,19 +218,17 @@
                 "snapNotes" : vm.snapNotes || null
             };
 
-        $http({
-            method: 'POST',
-            url: url,
-            data: data
-            }).then(function successCallback() {
-
+        dataService.saveSnap(
+            data,
+            function() {
                 toastr.success('File '+ fileName +' saved.');
                 snapUpdate();
-
-            }, function errorCallback() {
+            },
+            function () {
                 toastr.error('File '+ fileName +' not saved. Stored on device.');
                 snapSaveOffline(data);
-            });
+            }
+        );
 
     }
 
@@ -244,43 +245,9 @@
 
     function snapSaveOffline (data) {
 
-        var a = [];
-        if ($window.localStorage.getItem('stagedSnaps') !== null) a = angular.fromJson($window.localStorage.getItem('stagedSnaps'));
-        a.push(data);
-        $window.localStorage.setItem('stagedSnaps', angular.toJson(a));
+        addToLocalData('stagedSnaps', data);
         snapUpdate();
 
-    }
-
-    ////////// View settings
-
-    function isCameraOpen () {
-
-        if ( (vm.selectedCamera === '') || (vm.selectedLens === '') || (vm.selectedFilePattern === '') ) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    function isSeriesOpen () {
-
-        if ( (!vm.cameraOpen) && ( (vm.selectedSeriesName === '') || (vm.selectedFileNumber === '') ) ) {
-            return true;
-        } else {
-            return false;
-        }
-
-    }
-
-    function isSettingsOpen () {
-
-        if (!vm.cameraOpen && !vm.seriesOpen) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     ////////// Watchers on the wall

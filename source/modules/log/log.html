@@ -1,59 +1,70 @@
 <div>
 
-    <div class="row margin-bottom sub-header">
-        <div class="col-xs-12 sub-header-col">
+    <div class="row margin-bottom">
+        <div class="sub-header-col">
             <div ncy-breadcrumb></div>
 
             <h1>Log</h1>
 
                 <div class="row">
-                <accordion close-others="true">
-                    <accordion-group is-open="vm.cameraOpen">
-                        <accordion-heading><i class="fa fa-camera fa-fw"></i> Camera</accordion-heading>
+
+                    <div class="small-12 columns">
+<form name="logForm" ng-submit="vm.snap()" novalidate>
+                        <h3><i class="fa fa-camera fa-fw"></i> Camera</h3>
                         <fieldset>
                             <div ng-if="vm.availableCameras">
                                 <label for="cameraName">Which camera?</label>
                                 <select name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required ng-options="camera.camera_id as camera.name for camera in vm.availableCameras" ng-change="vm.getAvailableLenses(vm.selectedCamera)"></select>
                             </div>
-                            <div>
+                            <div ng-class="{ 'has-error' : logForm.filePattern.$invalid && !logForm.filePattern.$pristine }">
                                 <label for="filePattern">Filename pattern?</label>
                                 <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
+                                <span class="form-msg">This is a required field</span>
                             </div>
                             <div ng-if="vm.availableLenses">
                                 <label for="lensName">Which lens</label>
                                 <select name="lensName" id="lensName" ng-model="vm.selectedLens" required ng-options="lens.lens_id as lens.name for lens in vm.availableLenses" ng-change="vm.getAvailableApertures(vm.selectedLens)"></select>
                             </div>
                         </fieldset>
-                    </accordion-group>
-                    <accordion-group is-open="vm.seriesOpen">
-                        <accordion-heading><i class="fa fa-picture-o fa-fw"></i> Series</accordion-heading>
+
+                        <h3><i class="fa fa-picture-o fa-fw"></i> Series</h3>
                         <fieldset>
-                            <div>
+                            <div ng-class="{ 'has-error' : logForm.seriesName.$invalid  }">
                                 <label for="seriesName">Series name?</label>
                                 <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" required />
+                                <span class="form-msg">This is a required field</span>
                             </div>
-                            <div>
+                            <div ng-class="{ 'has-error' : logForm.fileNumber.$invalid && !logForm.fileNumber.$pristine }">
                                 <label for="fileNumber">Starting number?</label>
                                 <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
+                                <span class="form-msg">This is a required field</span>
                             </div>
-                            <div ng-if="vm.selectedLocationLat && vm.selectedLocationLong" >
-                                <label for="locationLat">Location (GPS required)?</label>
-                                <input type="text" name="locationLat" id="locationLat" ng-model="vm.selectedLocationLat" />
-                                <input type="text" name="locationongt" id="locationLong" ng-model="vm.selectedLocationLong" />
+                            <div>
+                                <button class="small round btn-info" ng-click="vm.getLocation()">Get my location</button>
+                            </div>
+                            <div ng-if="vm.selectedLocationLat">
+                                <label for="locationLat">Location found (within {{vm.accuracy}} meters):</label>
+                                Lattitude: {{vm.selectedLocationLat}}, Longitude {{vm.selectedLocationLong}}<br/>
 
+                                <input type="hidden" name="locationLat" id="locationLat" ng-model="vm.selectedLocationLat" />
+                                <input type="hidden" name="locationongt" id="locationLong" ng-model="vm.selectedLocationLong" />
+
+                                <div ng-if="vm.map">
                                 <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" options="vm.map.options">
                                     <ui-gmap-marker coords="vm.marker.coords" options="vm.marker.options" events="vm.marker.events" idkey="vm.marker.id"></ui-gmap-marker>
                                 </ui-gmap-google-map>
+                                Marker may be dragged to refine position.
+                                </div>
 
                             </div>
                         </fieldset>
-                    </accordion-group>
-                    <accordion-group is-open="vm.settingsOpen">
-                        <accordion-heading><i class="fa fa-cogs fa-fw"></i> Settings</accordion-heading>
+
+                        <h3><i class="fa fa-cogs fa-fw"></i> Settings</h3>
                         <fieldset>
-                            <div>
+                            <div ng-class="{ 'has-error' : logForm.focalLength.$invalid && !logForm.focalLength.$pristine }">
                                 <label for="focalLength">Which focal length (mm)?</label>
                                 <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
+                                <span class="form-msg">This is a required field</span>
                             </div>
 
                             <div ng-if="vm.availableApertures">
@@ -72,13 +83,13 @@
                             </div>
 
                         </fieldset>
-                    </accordion-group>
-                </accordion>
+</form>
+                    </div>
             </div>
 
             <div class="row">
                 <div class="small-12 large-6 columns centered">
-                    <button type="button" class="button round btn-info expand" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span></button>
+                    <button type="button" class="button round btn-info expand" ng-disabled="logForm.$invalid" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span></button>
 
                 </div>
                 <div class="small-12 large-6 columns centered text-center">
