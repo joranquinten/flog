@@ -36,7 +36,9 @@
     "ui-select": "angular-ui-select#^0.16.1",
     "angular-sanitize": "^1.5.3",
     "underscore": "^1.8.3",
-    "angular-google-maps": "^2.3.2"
+    "angular-google-maps": "^2.3.2",
+    "angularjs-slider": "^2.13.0",
+    "bootstrap": "^3.3.6"
   },
   "resolutions": {
     "angular": "1.5.3",

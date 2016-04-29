@@ -3,6 +3,6 @@
   'use strict';
 
   angular
-    .module('app.dashboard', ['ui.router']);
+    .module('app.dashboard', []);
 
 })();

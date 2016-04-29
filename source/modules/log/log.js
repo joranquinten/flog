@@ -7,20 +7,34 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, $interval, $window, toastr, devicesService, dataService) {
+  function log($http, $scope, $cookies, $interval, $window, toastr, dataService) {
+
+    var apertures = '2.0,2.8,4.0,5.6,8,11,16,22'.split(',');
 
     var vm = this;
 
     vm.snap = snap;
     vm.reset = reset;
     vm.getLocation = getLocation;
+    vm.removeLocation = removeLocation;
+    vm.itemsInLocalStorage = itemsInLocalStorage();
 
-    vm.availableCameras = [];
-    vm.availableLenses = [];
-    vm.availableApertures = [];
+    vm.selectedAperture = {
+            value: 5.6,
+            options: {
+                stepsArray: apertures
+                }
+            };
 
-    vm.getAvailableLenses = availableLenses;
-    vm.getAvailableApertures = availableApertures;
+    vm.selectedFocalDistance = {
+            value: null,
+            options: {
+                floor: 0.2,
+                ceil: 1.5,
+                step: 0.1,
+                precision: 1
+                }
+            };
 
     setInitValues();
 
@@ -28,38 +42,31 @@
 
     function setInitValues (clearValues) {
 
-        vm.selectedCamera = $cookies.get('storedCamera') || '';
-        vm.selectedLens = $cookies.get('storedLens') || '';
         vm.selectedFilePattern = $cookies.get('storedFilePattern') || 'DSC#####';
         if (!clearValues) {
 
             vm.selectedSeriesName = $cookies.get('storedSeriesName') || '';
             vm.selectedFileNumber = parseInt($cookies.get('storedFileNumber')) || '';
             vm.selectedLocation = $cookies.get('storedLocation') || '';
-            vm.selectedFocalLength = parseInt($cookies.get('storedFocalLength')) || '';
-            vm.selectedFocalDistance = parseFloat($cookies.get('storedFocalDistance')) || '';
-            vm.selectedAperture = parseFloat($cookies.get('storedAperture')) || '';
+
+            vm.selectedAperture.value = apertures.indexOf($cookies.get('storedAperture'));
+            vm.selectedFocalDistance.value = parseFloat($cookies.get('storedFocalDistance') || 0.2);
+
             vm.snapNotes = $cookies.get('storedSnapNotes') || '';
             vm.NumberOfSaved = parseInt($cookies.get('storedNumberOfSaved')) || 0;
             //getLocation();
 
         } else {
 
-            vm.selectedSeriesName = '';
             vm.selectedFileNumber = '';
             vm.selectedLocation = '';
-            vm.selectedFocalLength = '';
-            vm.selectedFocalDistance = '';
-            vm.selectedAperture = '';
+            vm.selectedFocalDistance.value = 0;
+            vm.selectedAperture.value = 0;
             vm.snapNotes = '';
             vm.NumberOfSaved = 0;
             //getLocation();
 
         }
-
-        vm.availableCameras = availableCameras();
-        vm.availableLenses = availableLenses();
-        vm.availableApertures = availableApertures();
 
     }
 
@@ -77,7 +84,6 @@
         toastr.info('New series initialized, please recheck the settings.');
         setInitValues(true);
     }
-
 
     function getLocation() {
         if (navigator.geolocation) {
@@ -121,7 +127,6 @@
                 toastr.error('Unable to resolve geolocation: '+ error.message);
             }
 
-
             var locOptions = {
               enableHighAccuracy: true,
               timeout: 5000,
@@ -137,60 +142,22 @@
         }
     }
 
-    // For the sake of validation and ordering, aperture size is reversed in these functions. e.g. 16 is considered large and 1.8 is considered small. Just for ordering sizes.
-    function minAperture() {
-        if (vm.selectedLens && vm.availableApertures) {
-            // return min aperture for selected lens (property maxAperture!)
-            var obj = _.find(availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
-            return (angular.isDefined(obj)) ? obj.min_aperture : false;
-        } else if (angular.isArray(vm.availableApertures)) {
-            return Math.min.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
-        }
-    }
+    function removeLocation() {
+        vm.selectedLocationLat = null;
+        vm.selectedLocationLong = null;
+        vm.accuracy = null;
 
-    function maxAperture() {
-        if (vm.selectedLens && vm.availableApertures) {
-            // return max aperture for selected lens (property maxAperture!)
-            var obj = _.find(availableLenses, function(o) { return (o.lens_id == vm.selectedLens) });
-            return (angular.isDefined(obj)) ? obj.max_aperture : false;
-        } else if (angular.isArray(vm.availableApertures)) {
-            return Math.max.apply(Math,vm.availableApertures.map(function(o){return o.value;}))
-        }
     }
 
     //////////////////// Private functions
 
     ////////// Data sources
 
-    function availableCameras () {
-       return devicesService.getCameras().then(function(cameras) {
-            vm.availableCameras = cameras;
-            return vm.availableCameras;
-        });
-    }
-
-    function availableLenses () {
-       return devicesService.getLenses(vm.selectedCamera).then(function(lenses) {
-            vm.availableLenses = lenses;
-            return vm.availableLenses;
-        });
-    }
-
-    function availableApertures () {
-       return devicesService.getApertures(vm.selectedLens).then(function(apertures) {
-            vm.availableApertures = apertures;
-            return vm.availableApertures;
-        });
-    }
-
     ////////// Form actions
 
     function fieldsAreValid () {
         // if fails, return false;
-
-         console.log($scope.logForm.$valid)
-
-        return false;
+        return $scope.logForm.$valid;
     }
 
     function snapSave () {
@@ -205,13 +172,9 @@
             fileName = prefix + ('0000000000' + vm.selectedFileNumber).slice(-padding);
 
         var data = {
-                "cameraId" : vm.selectedCamera || null,
-                "lensId" : vm.selectedLens || null,
                 "fileName" : fileName || null,
-                "seriesName" : vm.selectedSeriesName || null,
-                "focalLength" : vm.selectedFocalLength || null,
-                "focalDistance" : vm.selectedFocalDistance || null,
-                "apertureSize" : vm.selectedAperture || null,
+                "focalDistance" : vm.selectedFocalDistance.value || null,
+                "apertureSize" : vm.selectedAperture.value || null,
                 "fileDate" : now.toISOString() || null,
                 "locationLat" : vm.selectedLocationLat || null,
                 "locationLong" : vm.selectedLocationLong || null,
@@ -226,6 +189,8 @@
             },
             function () {
                 toastr.error('File '+ fileName +' not saved. Stored on device.');
+
+                vm.itemsInLocalStorage += 1;
                 snapSaveOffline(data);
             }
         );
@@ -234,9 +199,10 @@
 
     function snapUpdate () {
 
-        vm.selectedFileNumber = parseInt(vm.selectedFileNumber + 1);
+        vm.selectedFileNumber += 1;
         vm.NumberOfSaved += 1;
 
+        $cookies.put('storedFileNumber', vm.selectedFileNumber);
         $cookies.put('storedNumberOfSaved', vm.NumberOfSaved);
 
     }
@@ -244,33 +210,29 @@
     ////////// Data settings
 
     function snapSaveOffline (data) {
-
-        addToLocalData('stagedSnaps', data);
+        dataService.addToLocalData('stagedSnaps', data);
         snapUpdate();
 
     }
 
     ////////// Watchers on the wall
 
-    $scope.$watch('vm.selectedLens', function() {
-        // update the DOM with newValue instead of oldValue
-        vm.minAperture = minAperture();
-        vm.maxAperture = maxAperture();
-    });
+    function itemsInLocalStorage() {
+        if (angular.isDefined(dataService.getFromLocalData('stagedSnaps'))) {
+            var items = dataService.getFromLocalData('stagedSnaps');
+            return items.length;
+        }
+    }
 
     ////////// Local storage
 
     function setCookie () {
 
-        $cookies.put('storedCamera', vm.selectedCamera);
-        $cookies.put('storedLens', vm.selectedLens);
         $cookies.put('storedFilePattern', vm.selectedFilePattern);
-        $cookies.put('storedSeriesName', vm.selectedSeriesName);
         $cookies.put('storedFileNumber', vm.selectedFileNumber);
         $cookies.put('storedLocation', vm.selectedLocation);
-        $cookies.put('storedFocalLength', vm.selectedFocalLength);
-        $cookies.put('storedFocalDistance', vm.selectedFocalDistance);
-        $cookies.put('storedAperture', vm.selectedAperture);
+        $cookies.put('storedFocalDistance', vm.selectedFocalDistance.value);
+        $cookies.put('storedAperture', apertures[vm.selectedAperture.value]);
         $cookies.put('storedSnapNotes', vm.snapNotes);
         $cookies.put('storedLocationLat', vm.selectedLocationLat);
         $cookies.put('storedLocationLong', vm.selectedLocationLong);

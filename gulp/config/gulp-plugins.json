@@ -30,9 +30,7 @@
   },
   "browserSync": {
     "proxy": "localhost/project-boilerplate/?make-sure-you-add-project-to-nginx",
-    "browsers": [
-      "Google Chrome Portable"
-    ]
+    "browsers": []
   },
   "karma": {
     "configFile": "\\plugins\\unit.karma.conf.js",

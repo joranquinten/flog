@@ -1,53 +1,45 @@
-<div>
+<div class="container">
+    <div ncy-breadcrumb></div>
 
-    <div class="row margin-bottom sub-header">
-        <div class="col-xs-12 sub-header-col">
-            <div ncy-breadcrumb></div>
-
-            <h1>Offline data</h1>
+   <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Offline data</h3>
+        </div>
+        <div class="panel-body">
 
             <div ng-if="vm.hasLocalData">
 
-                <div class="row">
 
-                    <ul class="cards">
-                        <li class="card panel" ng-repeat="snap in vm.localData">
-                           <span class="card-title">{{snap.seriesName}} - {{snap.fileName}}</span>
-                           <table>
-                               <tr>
-                                   <td>Recorded:</td>
-                                   <td>{{snap.fileDate}}</td>
-                               </tr>
-                               <tr ng-if="snap.locationLat && snap.locationLong">
-                                   <td>Position:</td>
-                                   <td>{{snap.locationLat}}, {{snap.locationLong}}</td>
-                               </tr>
-                           </table>
-                           <button type="button" class="button tiny success" ng-click="vm.saveLocalDataItem(snap, $index)">Save this item &#x2713;</button>
-                           <button type="button" class="button tiny alert" ng-click="vm.removeLocalDataItem($index)">Remove this item &times;</button>
-                        </li>
-                    </ul>
+                <ul class="list-group">
 
-                </div>
+                <li class="list-group-item card" ng-repeat="snap in vm.localData">
+                    <span class="card-title">{{snap.fileName}}<br/></span>
+                    <span class="card-attribute">{{snap.fileDate | date:'medium'}}<br/></span>
+                    <span ng-if="snap.locationLat && snap.locationLong" class="card-attribute">{{snap.locationLat}}, {{snap.locationLong}}<br/></span>
 
-                <div class="row">
-                    <div class="small-12 large-6 columns centered">
-                        <button type="button" class="button round btn-info expand" ng-click="vm.saveLocalData()">Save offline data</button>
+                    <div class="btn-group">
+                        <a type="button" class="btn btn-sm btn-default" ng-click="vm.saveLocalDataItem(snap, $index)">Save this <i class="fa fa-save"></i></a>
+                        <a type="button" class="btn btn-sm btn-default" ng-click="vm.removeLocalDataItem($index)">Remove this <i class="fa fa-trash-o"></i></a>
                     </div>
-                </div>
+                </li>
 
-                <div class="row">
-                    <div class="small-12 large-6 columns centered">
-                        <button type="button" class="button round btn-info expand" ng-click="vm.removeLocalData()">Clear offline data</button>
-                    </div>
+                </ul>
+
+                <div class="btn-group btn-group-justified">
+                    <a type="button" class="btn btn-md btn-success" ng-click="vm.saveLocalData()">Save all <i class="fa fa-save"></i></a>
+                    <a type="button" class="btn btn-md btn-danger" ng-click="vm.removeLocalData()">Clear all <i class="fa fa-trash-o"></i></a>
                 </div>
 
             </div>
+
             <div ng-if="!vm.hasLocalData">
-            No offline data
+                No offline data
             </div>
-
 
         </div>
     </div>
 </div>
+
+
+
+

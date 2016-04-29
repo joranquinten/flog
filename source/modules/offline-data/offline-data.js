@@ -31,6 +31,7 @@
 
     function removeLocalData () {
         $window.localStorage.removeItem('stagedSnaps');
+        vm.localData = null;
         toastr.info('Offline data purged.');
     }
 

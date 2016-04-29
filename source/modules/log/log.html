@@ -1,102 +1,92 @@
-<div>
+<div class="container">
+    <div ncy-breadcrumb></div>
 
-    <div class="row margin-bottom">
-        <div class="sub-header-col">
-            <div ncy-breadcrumb></div>
+   <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Log</h3>
+        </div>
+        <div class="panel-body">
 
-            <h1>Log</h1>
+            <form name="logForm" novalidate role="form">
+            <fieldset>
 
-                <div class="row">
+                <div class="form-group" ng-class="{ 'has-error' : logForm.filePattern.$invalid && !logForm.filePattern.$pristine }">
+                    <label for="filePattern">Filename pattern?</label>
+                    <input class="form-control" type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
+                    <span class="form-msg">This is a required field</span>
+                </div>
 
-                    <div class="small-12 columns">
-<form name="logForm" ng-submit="vm.snap()" novalidate>
-                        <h3><i class="fa fa-camera fa-fw"></i> Camera</h3>
-                        <fieldset>
-                            <div ng-if="vm.availableCameras">
-                                <label for="cameraName">Which camera?</label>
-                                <select name="cameraName" id="cameraName" ng-model="vm.selectedCamera" required ng-options="camera.camera_id as camera.name for camera in vm.availableCameras" ng-change="vm.getAvailableLenses(vm.selectedCamera)"></select>
-                            </div>
-                            <div ng-class="{ 'has-error' : logForm.filePattern.$invalid && !logForm.filePattern.$pristine }">
-                                <label for="filePattern">Filename pattern?</label>
-                                <input type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
-                                <span class="form-msg">This is a required field</span>
-                            </div>
-                            <div ng-if="vm.availableLenses">
-                                <label for="lensName">Which lens</label>
-                                <select name="lensName" id="lensName" ng-model="vm.selectedLens" required ng-options="lens.lens_id as lens.name for lens in vm.availableLenses" ng-change="vm.getAvailableApertures(vm.selectedLens)"></select>
-                            </div>
-                        </fieldset>
+                <div class="form-group" ng-class="{ 'has-error' : logForm.fileNumber.$invalid && !logForm.fileNumber.$pristine }">
+                    <label for="fileNumber">Starting number?</label>
+                    <input class="form-control" type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
+                    <span class="form-msg">This is a required field</span>
+                </div>
 
-                        <h3><i class="fa fa-picture-o fa-fw"></i> Series</h3>
-                        <fieldset>
-                            <div ng-class="{ 'has-error' : logForm.seriesName.$invalid  }">
-                                <label for="seriesName">Series name?</label>
-                                <input type="text" name="seriesName" id="seriesName" ng-model="vm.selectedSeriesName" required />
-                                <span class="form-msg">This is a required field</span>
-                            </div>
-                            <div ng-class="{ 'has-error' : logForm.fileNumber.$invalid && !logForm.fileNumber.$pristine }">
-                                <label for="fileNumber">Starting number?</label>
-                                <input type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
-                                <span class="form-msg">This is a required field</span>
-                            </div>
-                            <div>
-                                <button class="small round btn-info" ng-click="vm.getLocation()">Get my location</button>
-                            </div>
-                            <div ng-if="vm.selectedLocationLat">
-                                <label for="locationLat">Location found (within {{vm.accuracy}} meters):</label>
-                                Lattitude: {{vm.selectedLocationLat}}, Longitude {{vm.selectedLocationLong}}<br/>
-
-                                <input type="hidden" name="locationLat" id="locationLat" ng-model="vm.selectedLocationLat" />
-                                <input type="hidden" name="locationongt" id="locationLong" ng-model="vm.selectedLocationLong" />
-
-                                <div ng-if="vm.map">
-                                <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" options="vm.map.options">
-                                    <ui-gmap-marker coords="vm.marker.coords" options="vm.marker.options" events="vm.marker.events" idkey="vm.marker.id"></ui-gmap-marker>
-                                </ui-gmap-google-map>
-                                Marker may be dragged to refine position.
-                                </div>
-
-                            </div>
-                        </fieldset>
-
-                        <h3><i class="fa fa-cogs fa-fw"></i> Settings</h3>
-                        <fieldset>
-                            <div ng-class="{ 'has-error' : logForm.focalLength.$invalid && !logForm.focalLength.$pristine }">
-                                <label for="focalLength">Which focal length (mm)?</label>
-                                <input type="number" name="focalLength" id="focalLength" ng-model="vm.selectedFocalLength" required />
-                                <span class="form-msg">This is a required field</span>
-                            </div>
-
-                            <div ng-if="vm.availableApertures">
-                                <label for="apertureSize">Which aperture (f)?</label>
-                                <select name="apertureSize" id="apertureSize" ng-model="vm.selectedAperture" required ng-options="aperture.value as aperture.text for aperture in vm.availableApertures"></select>
-                            </div>
-
-                            <div>
-                                <label for="focalDistance">Which focal distance (m)?</label>
-                                <input type="number" name="focalDistance" id="focalDistance" ng-model="vm.selectedFocalDistance" required />
-                            </div>
-
-                            <div>
-                                <label for="snapNotes">Notes</label>
-                                <textarea name="snapNotes" id="snapNotes" ng-model="vm.snapNotes" rows="5"></textarea>
-                            </div>
-
-                        </fieldset>
-</form>
+                <div class="form-group">
+                    <div class="btn-group btn-group-justified">
+                        <a type="button" class="btn btn-default" ng-if="!vm.selectedLocationLat" ng-click="vm.getLocation(); $event.stopPropagation();">Get my location</a>
                     </div>
-            </div>
 
-            <div class="row">
-                <div class="small-12 large-6 columns centered">
-                    <button type="button" class="button round btn-info expand" ng-disabled="logForm.$invalid" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="label alert round">{{vm.NumberOfSaved}}</span></button>
+                    <div ng-if="vm.selectedLocationLat">
+                        <div class="well">
+                            <label for="locationLat">Location found (within {{vm.accuracy}} meters):</label>
+                            Lattitude: {{vm.selectedLocationLat}}, Longitude {{vm.selectedLocationLong}}<br/>
+
+                            <input type="hidden" name="locationLat" id="locationLat" ng-model="vm.selectedLocationLat" />
+                            <input type="hidden" name="locationongt" id="locationLong" ng-model="vm.selectedLocationLong" />
+
+                            <div ng-if="vm.map">
+                            <ui-gmap-google-map center="vm.map.center" zoom="vm.map.zoom" options="vm.map.options">
+                                <ui-gmap-marker coords="vm.marker.coords" options="vm.marker.options" events="vm.marker.events" idkey="vm.marker.id"></ui-gmap-marker>
+                            </ui-gmap-google-map>
+                            Marker may be dragged to refine position.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="btn-group btn-group-justified">
+                        <a type="button" class="btn btn-warning" ng-if="vm.selectedLocationLat" ng-click="vm.removeLocation(); $event.stopPropagation();">Remove my location</a>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="apertureSize">Which aperture (f)?</label>
+                    <rzslider
+                         rz-slider-model="vm.selectedAperture.value"
+                         rz-slider-options="vm.selectedAperture.options"></rzslider>
+                </div>
+
+                <div class="form-group">
+                    <label for="focalDistance">Which focal distance (m)?</label>
+                    <rzslider
+                         rz-slider-model="vm.selectedFocalDistance.value"
+                         rz-slider-options="vm.selectedFocalDistance.options"></rzslider>
 
                 </div>
-                <div class="small-12 large-6 columns centered text-center">
-                    <button type="button" class="button round btn-info expand" ng-click="vm.reset()">New series</button>
+
+                <div class="form-group">
+                    <label for="snapNotes">Notes</label>
+                    <textarea class="form-control" name="snapNotes" id="snapNotes" ng-model="vm.snapNotes" rows="5"></textarea>
                 </div>
+
+            </fieldset>
+
+            <div class="btn-group btn-group-justified">
+                <a type="button" class="btn btn-lg btn-primary" ng-disabled="logForm.$invalid" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="badge">{{vm.NumberOfSaved}}</span></a>
+                <a type="button" class="btn btn-lg btn-default" ng-click="vm.reset()">New series</a>
             </div>
+
+            </form>
+            </div>
+
+            <div class="container">
+                <div class="btn-group btn-group-justified">
+                    <a ui-sref="offline-data" type="button" class="btn btn-lg btn-default" ng-if="vm.itemsInLocalStorage > 0">Local data <span ng-hide="vm.itemsInLocalStorage === 0" class="badge">{{vm.itemsInLocalStorage}}</span></a>
+                </div>
 
         </div>
+
     </div>
+
 </div>
+

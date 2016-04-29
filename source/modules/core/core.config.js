@@ -5,7 +5,7 @@
   angular
     .module('app.core')
     .value('coreConfig', {
-      appTitle: 'HTML5 Boilerplate'
+      appTitle: 'ƒLog'
     })
     .config(setConfiguration);
 

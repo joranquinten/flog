@@ -6,7 +6,7 @@
     .module('app.core', [
 
       /* Angular Modules */
-      'ui.select',
+      'ui.router',
       'ngAnimate',
       'ngSanitize',
       'ngCookies',

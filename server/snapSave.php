@@ -16,12 +16,8 @@
     // Read data
     $request_body = file_get_contents('php://input');
     $data = json_decode($request_body, true);
-
-    $camera_id = $data['cameraId'];
-    $lens_id = $data['lensId'];
+	
     $file_name = $data['fileName'];
-    $series_name = $data['seriesName'];
-    $focal_length = $data['focalLength'];
     $focal_distance = $data['focalDistance'];
     $aperture_size = $data['apertureSize'];
     $file_date = $data['fileDate'];
@@ -33,9 +29,9 @@
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
 
         $sql  = ' INSERT INTO snaps ';
-        $sql .= ' (camera_id, lens_id, file_name, series_name, focal_length, focal_distance, aperture_size, file_date, lat, lng, notes) ';
+        $sql .= ' (file_name, focal_distance, aperture_size, file_date, lat, lng, notes) ';
         $sql .= ' VALUES ';
-        $sql .= ' ("'. $camera_id .'", "'. $lens_id .'", "'. $file_name .'", "'. $series_name .'", "'. $focal_length .'", "'. $focal_distance .'", "'. $aperture_size .'", "'.$file_date.'", "'. $locationLat .'", "'. $locationLong .'", "'. $notes .'"); ';
+        $sql .= ' ("'. $file_name .'", "'. $focal_distance .'", "'. $aperture_size .'", "'.$file_date.'", "'. $locationLat .'", "'. $locationLong .'", "'. $notes .'"); ';
 
         $dbh->query($sql);
         $dbh = null;

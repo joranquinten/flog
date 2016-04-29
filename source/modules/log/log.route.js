@@ -7,9 +7,10 @@
     .config(config);
 
   /* @ngInject */
-  function config($stateProvider) {
+  function config($stateProvider, $urlRouterProvider) {
 
     addState();
+    addAsDefaultState();
 
     ///////////
 
@@ -19,9 +20,14 @@
         templateUrl: 'modules/log/log.html',
         controller: 'log as vm',
         ncyBreadcrumb: {
-          label: 'Log'
+          label: 'Log'/*,
+          parent: 'dashboard'*/
         }
       });
+    }
+
+    function addAsDefaultState() {
+      $urlRouterProvider.otherwise('log');
     }
 
   }

@@ -14,12 +14,13 @@
     ///////////
 
     function addState() {
-      $stateProvider.state('offlinedata', {
+      $stateProvider.state('offline-data', {
         url: '/offline-data',
         templateUrl: 'modules/offline-data/offline-data.html',
         controller: 'offlineData as vm',
         ncyBreadcrumb: {
-          label: 'Offline data'
+          label: 'Offline data',
+          parent: 'log'
         }
       });
     }

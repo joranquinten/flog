@@ -7,10 +7,9 @@
     .config(config);
 
   /* @ngInject */
-  function config($stateProvider, $urlRouterProvider) {
+  function config($stateProvider) {
 
     addState();
-    addAsDefaultState();
 
     ///////////
 
@@ -23,10 +22,6 @@
           label: 'Dashboard'
         }
       });
-    }
-
-    function addAsDefaultState() {
-      $urlRouterProvider.otherwise('dashboard');
     }
 
   }

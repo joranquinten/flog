@@ -3,21 +3,21 @@
 }
 
 .has-error label {
-    color: crimson !important;
+  color: crimson !important;
 }
 
 .has-error input {
-    color: crimson !important;
-    border-color: crimson !important;
+  color: crimson !important;
+  border-color: crimson !important;
 }
 
 .form-msg {
-    display: none;
-    height: 0;
-    font-size: 0.8em;
-    color: #333;
+  display: none;
+  height: 0;
+  font-size: 0.8em;
+  color: #333;
 }
 
 .has-error .form-msg {
-    display: block;
+  display: block;
 }
