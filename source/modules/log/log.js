@@ -188,7 +188,7 @@
         var data = {
                 "fileName" : fileName || null,
                 "focalDistance" : vm.selectedFocalDistance.value || null,
-                "apertureSize" : vm.selectedAperture.value || null,
+                "apertureSize" : apertures[vm.selectedAperture.value] || null,
                 "fileDate" : now.toISOString() || null,
                 "locationLat" : vm.selectedLocationLat || null,
                 "locationLong" : vm.selectedLocationLong || null,
