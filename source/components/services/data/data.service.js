@@ -24,7 +24,7 @@
 
             $http({
                 method: 'POST',
-                url: '../server/snapSave.php',
+                url: '../server/snapSave..php',
                 data: data
             }).then(function success() {
                 successCallback();

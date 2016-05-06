@@ -7,7 +7,7 @@
     .controller('log', log);
 
   /* @ngInject */
-  function log($http, $scope, $cookies, $interval, $window, toastr, dataService) {
+  function log($http, $state, $scope, $cookies, $interval, $window, toastr, dataService) {
 
     var apertures = '2.0,2.8,4.0,5.6,8,11,16,22'.split(',');
 
@@ -15,6 +15,7 @@
 
     vm.snap = snap;
     vm.reset = reset;
+    vm.localStorage = localStorage;
     vm.getLocation = getLocation;
     vm.removeLocation = removeLocation;
     vm.itemsInLocalStorage = itemsInLocalStorage();
@@ -48,8 +49,9 @@
             vm.selectedSeriesName = $cookies.get('storedSeriesName') || '';
             vm.selectedFileNumber = parseInt($cookies.get('storedFileNumber')) || '';
             vm.selectedLocation = $cookies.get('storedLocation') || '';
-
-            vm.selectedAperture.value = apertures.indexOf($cookies.get('storedAperture'));
+            if (angular.isDefined($cookies.get('storedAperture'))){
+                vm.selectedAperture.value = apertures.indexOf($cookies.get('storedAperture'));
+            }
             vm.selectedFocalDistance.value = parseFloat($cookies.get('storedFocalDistance') || 0.2);
 
             vm.snapNotes = $cookies.get('storedSnapNotes') || '';
@@ -81,8 +83,12 @@
     }
 
     function reset () {
-        toastr.info('New series initialized, please recheck the settings.');
-        setInitValues(true);
+        if (vm.NumberOfSaved === 0) {
+            toastr.warning('You cannot initialize a new serie while current series is empty.');
+        } else {
+            toastr.info('New series initialized, please recheck the settings.');
+            setInitValues(true);
+        }
     }
 
     function getLocation() {
@@ -139,6 +145,14 @@
 
         } else {
             toastr.warning('No geolocation available.');
+        }
+    }
+
+    function localStorage() {
+        if (vm.itemsInLocalStorage === 0) {
+            toastr.warning('There are no items in local storage.');
+        } else {
+            $state.go('offline-data');
         }
     }
 

@@ -7,7 +7,7 @@
     .controller('offlineData', offlineData);
 
   /* @ngInject */
-  function offlineData($scope, $cookies, $window, toastr, dataService) {
+  function offlineData($scope, $state, $cookies, $window, toastr, dataService) {
 
     var vm = this;
 
@@ -31,7 +31,7 @@
 
     function removeLocalData () {
         $window.localStorage.removeItem('stagedSnaps');
-        vm.localData = null;
+        vm.localData = [];
         toastr.info('Offline data purged.');
     }
 
@@ -82,9 +82,7 @@
     ////////// Data sources
 
     function localData () {
-
         return dataService.getFromLocalData('stagedSnaps');
-
     }
 
     ////////// Data settings
@@ -96,6 +94,11 @@
     ////////// View settings
 
     ////////// Watchers on the wall
+    $scope.$watch('vm.localData', function handleChange(newValue) {
+        if (newValue.length === 0 ){
+            $state.go('log');
+        }
+    });
 
     ////////// Local storage / cookies
 

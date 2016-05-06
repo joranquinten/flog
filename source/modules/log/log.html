@@ -11,20 +11,20 @@
             <fieldset>
 
                 <div class="form-group" ng-class="{ 'has-error' : logForm.filePattern.$invalid && !logForm.filePattern.$pristine }">
-                    <label for="filePattern">Filename pattern?</label>
+                    <label for="filePattern">Filename pattern? *</label>
                     <input class="form-control" type="text" name="filePattern" id="filePattern" ng-model="vm.selectedFilePattern" required />
                     <span class="form-msg">This is a required field</span>
                 </div>
 
                 <div class="form-group" ng-class="{ 'has-error' : logForm.fileNumber.$invalid && !logForm.fileNumber.$pristine }">
-                    <label for="fileNumber">Starting number?</label>
+                    <label for="fileNumber">Starting number? *</label>
                     <input class="form-control" type="number" name="fileNumber" id="fileNumber" ng-model="vm.selectedFileNumber" required />
                     <span class="form-msg">This is a required field</span>
                 </div>
 
                 <div class="form-group">
                     <div class="btn-group btn-group-justified">
-                        <a type="button" class="btn btn-default" ng-if="!vm.selectedLocationLat" ng-click="vm.getLocation(); $event.stopPropagation();">Get my location</a>
+                        <a type="button" class="btn btn-default" ng-if="!vm.selectedLocationLat" ng-click="vm.getLocation(); $event.stopPropagation();"><i class="fa fa-map-marker"></i> Get my location</a>
                     </div>
 
                     <div ng-if="vm.selectedLocationLat">
@@ -45,12 +45,12 @@
                     </div>
 
                     <div class="btn-group btn-group-justified">
-                        <a type="button" class="btn btn-warning" ng-if="vm.selectedLocationLat" ng-click="vm.removeLocation(); $event.stopPropagation();">Remove my location</a>
+                        <a type="button" class="btn btn-warning" ng-if="vm.selectedLocationLat" ng-click="vm.removeLocation(); $event.stopPropagation();"><i class="fa fa-times"></i> Remove my location</a>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="apertureSize">Which aperture (f)?</label>
+                    <label for="apertureSize">Which aperture (ƒ)?</label>
                     <rzslider
                          rz-slider-model="vm.selectedAperture.value"
                          rz-slider-options="vm.selectedAperture.options"></rzslider>
@@ -65,26 +65,27 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="snapNotes">Notes</label>
-                    <textarea class="form-control" name="snapNotes" id="snapNotes" ng-model="vm.snapNotes" rows="5"></textarea>
+                    <label for="snapNotes">Field notes</label>
+                    <textarea class="form-control" name="snapNotes" id="snapNotes" ng-model="vm.snapNotes" rows="{{rows}}" ng-focus="rows=10" ng-blur="rows=1"></textarea>
                 </div>
 
             </fieldset>
 
+            <p ng-if="logForm.$invalid">* means required</p>
+
             <div class="btn-group btn-group-justified">
-                <a type="button" class="btn btn-lg btn-primary" ng-disabled="logForm.$invalid" ng-click="vm.snap()">Snap! <span ng-hide="vm.NumberOfSaved === 0" class="badge">{{vm.NumberOfSaved}}</span></a>
-                <a type="button" class="btn btn-lg btn-default" ng-click="vm.reset()">New series</a>
+                <a type="button" class="btn btn-lg btn-primary" ng-disabled="logForm.$invalid" ng-click="vm.snap()"><i class="fa fa-camera"></i> Snap! <span ng-hide="vm.NumberOfSaved === 0" class="badge">{{vm.NumberOfSaved}}</span></a>
+            </div>
+
+            <br/>
+
+            <div class="btn-group btn-group-justified" ng-show="vm.NumberOfSaved > 0 || vm.itemsInLocalStorage > 0">
+                <a type="button" class="btn btn-md btn-default" ng-disabled="vm.NumberOfSaved === 0" ng-click="vm.reset()"><i class="fa fa-clone"></i> New series</a>
+                <a type="button" class="btn btn-md btn-default" ng-disabled="vm.itemsInLocalStorage === 0" ng-click="vm.localStorage()"><i class="fa fa-inbox"></i> Local data <span ng-hide="vm.itemsInLocalStorage === 0" class="badge">{{vm.itemsInLocalStorage}}</span></a>
             </div>
 
             </form>
             </div>
-
-            <div class="container">
-                <div class="btn-group btn-group-justified">
-                    <a ui-sref="offline-data" type="button" class="btn btn-lg btn-default" ng-if="vm.itemsInLocalStorage > 0">Local data <span ng-hide="vm.itemsInLocalStorage === 0" class="badge">{{vm.itemsInLocalStorage}}</span></a>
-                </div>
-
-        </div>
 
     </div>
 
