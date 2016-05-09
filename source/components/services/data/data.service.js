@@ -14,7 +14,8 @@
             addToLocalData : addToLocalData,
             getFromLocalData : getFromLocalData,
             removeFromLocalData : removeFromLocalData,
-            getFromStoredData : getFromStoredData
+            getFromStoredData : getFromStoredData,
+            exportFromStoredData : exportFromStoredData
         }
 
         return service;
@@ -71,12 +72,48 @@
                     url: '../server/getSavedSnaps.php',
                     data: data
                 })
-                .then(getFromStoredDataComplete)
-                .catch(function(){
+                .then(getFromStoredDataComplete);
 
-                });
+            function getFromStoredDataComplete(data) {
+                return data.data;
+            }
 
-            function getFromStoredDataComplete(data, status, headers, config) {
+        }
+
+        function exportFromStoredData(data) {
+
+            return $http({
+                    method: 'POST',
+                    url: '../server/exportSavedSnaps.php',
+                    data: data
+                }).then(exportFromStoredDataComplete);
+
+            function exportFromStoredDataComplete(data) {
+
+                var filename, timestamp, extension;
+                timestamp = moment(new Date()).format('YYYYMMDDHHmmss');
+                extension = '.csv';
+                filename = 'export-'+ timestamp + extension;
+
+                var blob = new Blob([data.data], { type:"application/octet-stream;charset=utf-8;" });
+                var downloadLink = angular.element('<a></a>');
+                downloadLink.attr('href',window.URL.createObjectURL(blob));
+                downloadLink.attr('download', filename);
+                downloadLink[0].click();
+            }
+
+        }
+
+        function deleteFromStoredData(data) {
+
+            return $http({
+                    method: 'POST',
+                    url: '../server/deleteSavedSnaps.php',
+                    data: data
+                })
+                .then(deleteFromStoredData);
+
+            function deleteFromStoredData(data) {
                 return data.data;
             }
 

@@ -14,6 +14,7 @@
     vm.exportStoredData = exportStoredData;
 
     vm.storedData = storedData();
+    vm.toggleSelect = toggleSelect;
 
     ////////////////
 
@@ -21,7 +22,12 @@
     //////////////////// Public
 
     function exportStoredData () {
-       toastr.success('Export complete');
+        dataService.exportFromStoredData();
+    }
+
+    function toggleSelect($event) {
+        console.log($event)
+
     }
 
     //////////////////// Private functions
