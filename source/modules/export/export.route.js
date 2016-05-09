@@ -3,7 +3,7 @@
   'use strict';
 
   angular
-    .module('app.dashboard')
+    .module('app.exportData')
     .config(config);
 
   /* @ngInject */
@@ -14,12 +14,12 @@
     ///////////
 
     function addState() {
-      $stateProvider.state('dashboard', {
-        url: '/dashboard',
-        templateUrl: 'modules/dashboard/dashboard.html',
-        controller: 'dashboard as vm',
+      $stateProvider.state('export-data', {
+        url: '/export-data',
+        templateUrl: 'modules/export/export.html',
+        controller: 'exportData as vm',
         ncyBreadcrumb: {
-          label: 'Dashboard'
+          label: 'Export data'
         }
       });
     }

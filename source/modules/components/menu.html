@@ -1,0 +1,14 @@
+<div class="app-menu">
+    <button type="button" class="overlay-open" ng-click="vm.toggleOverlay()"><i class="fa fa-bars fa-2x"></i></button>
+
+    <div class="overlay fs-menu" ng-class="vm.overlayClassName">
+    <button type="button" class="overlay-close" ng-click="vm.toggleOverlay()"><i class="fa fa-times fa-2x"></i></button>
+    <nav>
+        <ul>
+            <li><a ui-sref="log" ui-sref-active="active">Log</a></li>
+            <li><a ui-sref="export-data" ui-sref-active="active">Export</a></li>
+        </ul>
+    </nav>
+    </div>
+</div>
+

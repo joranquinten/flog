@@ -6,10 +6,14 @@
 
         /* core modules */
         'app.core',
+        'app.menu',
 
         /* feature modules */
         'app.log',
-        'app.offlineData'
+        'app.offlineData',
+        'app.exportData'
     ]);
 
 })();
+
+

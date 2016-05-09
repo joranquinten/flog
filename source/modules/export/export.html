@@ -1,0 +1,53 @@
+<div class="container">
+    <div ncy-breadcrumb></div>
+
+   <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Export</h3>
+        </div>
+        <div class="panel-body">
+
+            <div ng-if="vm.storedData.length > 0">
+
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th><span>Name</span></th>
+                        <th><span>Focal distance</span></th>
+                        <th><span>Aperture</span></th>
+                        <th><span>Date</span></th>
+                        <th><span>Lattitude</span></th>
+                        <th><span>Longitude</span></th>
+                        <th><span>Notes</span></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr ng-repeat="snap in vm.storedData">
+                        <td>{{snap.fileName}}</td>
+                        <td>{{snap.focalDistance}}</td>
+                        <td>{{snap.apertureSize}}</td>
+                        <td>{{snap.fileDate | date: 'medium' }}</td>
+                        <td>{{snap.locationLat}}</td>
+                        <td>{{snap.locationLong}}</td>
+                        <td>{{snap.snapNotes}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  </div>
+
+            </div>
+
+            <div ng-if="vm.storedData.length === 0">
+                No stored data. Go to <a ui-sref="log">log</a> to log new snaps.
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<menu></menu>
+
+
+
+

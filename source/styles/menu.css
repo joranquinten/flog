@@ -1,0 +1,122 @@
+/* Overlay style */
+
+.app-menu .overlay ul li a,
+.app-menu button {
+  font-weight: 300;
+  display: block;
+  color: #fff;
+  -webkit-transition: color 0.2s;
+  transition: color 0.2s;
+}
+
+.app-menu .overlay ul li a.active {
+  text-decoration: underline;
+}
+
+.app-menu button {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+.app-menu button.overlay-open {
+  color: #337ab7;
+}
+
+.app-menu .overlay ul li a:hover,
+.app-menu .overlay ul li a:focus,
+.app-menu button:hover,
+.app-menu button:focus {
+  color: #e3fcb1;
+}
+
+.overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: #337ab7;
+  z-index: 100000;
+}
+
+/* Menu style */
+
+.overlay nav {
+  text-align: center;
+  position: relative;
+  top: 50%;
+  height: 60%;
+  font-size: 42px;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.overlay ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto;
+  display: inline-block;
+  height: 100%;
+  position: relative;
+}
+
+.overlay ul li {
+  display: block;
+  height: 20%;
+  height: calc(100% / 2);
+  min-height: 42px;
+}
+
+/* Effects */
+
+.fs-menu {
+  opacity: 0;
+  visibility: hidden;
+  -webkit-transition: opacity 0.5s, visibility 0s 0.5s;
+  transition: opacity 0.5s, visibility 0s 0.5s;
+}
+
+.fs-menu.open {
+  opacity: 1;
+  visibility: visible;
+  -webkit-transition: opacity 0.5s;
+  transition: opacity 0.5s;
+}
+
+.fs-menu nav {
+  -webkit-perspective: 1200px;
+  perspective: 1200px;
+}
+
+.fs-menu nav ul {
+  opacity: 0.4;
+  -webkit-transform: translateY(-25%) rotateX(35deg);
+  transform: translateY(-25%) rotateX(35deg);
+  -webkit-transition: -webkit-transform 0.5s, opacity 0.5s;
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.fs-menu.open nav ul {
+  opacity: 1;
+  -webkit-transform: rotateX(0deg);
+  transform: rotateX(0deg);
+}
+
+.fs-menu.close nav ul {
+  -webkit-transform: translateY(25%) rotateX(-35deg);
+  transform: translateY(25%) rotateX(-35deg);
+}
+
+@media screen and (max-height: 30.5em) {
+  .overlay nav {
+    height: 70%;
+    font-size: 34px;
+  }
+  .overlay ul li {
+    min-height: 34px;
+  }
+}

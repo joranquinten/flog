@@ -13,7 +13,8 @@
             saveSnap: saveSnap,
             addToLocalData : addToLocalData,
             getFromLocalData : getFromLocalData,
-            removeFromLocalData : removeFromLocalData
+            removeFromLocalData : removeFromLocalData,
+            getFromStoredData : getFromStoredData
         }
 
         return service;
@@ -59,6 +60,24 @@
                 a = angular.fromJson($window.localStorage.getItem(key));
                 a.splice(index, 1);
                 $window.localStorage.setItem(key, angular.toJson(a));
+            }
+
+        }
+
+        function getFromStoredData(data) {
+
+            return $http({
+                    method: 'POST',
+                    url: '../server/getSavedSnaps.php',
+                    data: data
+                })
+                .then(getFromStoredDataComplete)
+                .catch(function(){
+
+                });
+
+            function getFromStoredDataComplete(data, status, headers, config) {
+                return data.data;
             }
 
         }
