@@ -15,6 +15,15 @@
 // Get the data
 
     $items = array();
+	// Read data
+    $request_body = file_get_contents('php://input');
+    $data = json_decode($request_body, true);
+	
+	$snap_ids = '';
+	if ($data['ids']) {
+		$snap_ids = implode(',', $data['ids']);
+	}
+	
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
 
@@ -22,6 +31,9 @@
         $sql .= ' FROM ';
         $sql .= '   snaps ';
         $sql .= ' WHERE 1 ';
+		if ($snap_ids !== '') {
+			$sql .= ' AND snap_id IN ('. $snap_ids .') ';
+		}
         $sql .= ' ORDER BY file_date ASC ';
         $sql .= ' ; ';
 
@@ -58,6 +70,11 @@
     $total_time = round(($finish - $start), 4);
 
 	
+
+download_send_headers("data_export_" . date("Y-m-d") . ".csv");
+echo array2csv($items);
+die();
+
 function array2csv(array &$array)
 {
    if (count($array) == 0) {
@@ -89,10 +106,6 @@ function download_send_headers($filename) {
     header("Content-Disposition: attachment;filename={$filename}");
     header("Content-Transfer-Encoding: binary");
 }
-
-download_send_headers("data_export_" . date("Y-m-d") . ".csv");
-echo array2csv($items);
-die();
 ?>
 
 

@@ -10,11 +10,13 @@
   function storedData(toastr, dataService) {
 
     var vm = this;
+    var selectedIds = [];
 
     vm.exportStoredData = exportStoredData;
+    vm.exportSelectedStoredData = exportSelectedStoredData;
 
     vm.storedData = storedData();
-    vm.toggleSelect = toggleSelect;
+    vm.toggleSelection = toggleSelection;
 
     ////////////////
 
@@ -25,9 +27,21 @@
         dataService.exportFromStoredData();
     }
 
-    function toggleSelect($event) {
-        console.log($event)
+    function exportSelectedStoredData () {
+        dataService.exportFromStoredData({ids: selectedIds});
+    }
 
+    function toggleSelection(snapId) {
+        var idx = selectedIds.indexOf(snapId);
+
+        if (idx > -1) {
+          selectedIds.splice(idx, 1);
+        } else {
+          selectedIds.push(snapId);
+        }
+
+        vm.selection = selectedIds;
+        return vm.selection;
     }
 
     //////////////////// Private functions
