@@ -15,7 +15,8 @@
             getFromLocalData : getFromLocalData,
             removeFromLocalData : removeFromLocalData,
             getFromStoredData : getFromStoredData,
-            exportFromStoredData : exportFromStoredData
+            exportFromStoredData : exportFromStoredData,
+            deleteFromStoredData : deleteFromStoredData
         }
 
         return service;
@@ -97,7 +98,7 @@
 
                 var blob = new Blob([data.data], { type:"application/octet-stream;charset=utf-8;" });
                 var downloadLink = angular.element('<a></a>');
-                downloadLink.attr('href',window.URL.createObjectURL(blob));
+                downloadLink.attr('href', $window.URL.createObjectURL(blob));
                 downloadLink.attr('download', filename);
                 downloadLink[0].click();
             }
@@ -105,7 +106,6 @@
         }
 
         function deleteFromStoredData(data) {
-
             return $http({
                     method: 'POST',
                     url: '../server/deleteSavedSnaps.php',

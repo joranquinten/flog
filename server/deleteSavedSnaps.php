@@ -20,7 +20,7 @@
     $request_body = file_get_contents('php://input');
     $data = json_decode($request_body, true);
 	
-    $snap_ids = $data['snapIds'];
+    $snap_ids = implode(',',$data['ids']);
 	
     try {
         $dbh = new PDO('mysql:host=localhost;dbname=db_snaps', 'root', '');
@@ -32,7 +32,7 @@
         $sql .= ' ; ';
 
         // Push to array, to print JSON from
-        $dbh->query($sql)
+        $dbh->query($sql);
 
         $dbh = null;
 

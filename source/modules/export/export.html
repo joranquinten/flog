@@ -41,8 +41,13 @@
                 </div>
 
                 <div class="btn-group btn-group-justified">
+
                     <a ng-if="vm.selection.length === 0 || !vm.selection" type="button" class="btn btn-md btn-success" ng-click="vm.exportStoredData()"><i class="fa fa-file-o"></i> Save all as CSV</a>
                     <a ng-if="vm.selection.length > 0" type="button" class="btn btn-md btn-success" ng-click="vm.exportSelectedStoredData()"><i class="fa fa-check-square-o"></i> Save selected as CSV</a>
+
+                    <a ng-if="vm.selection.length > 0" type="button" class="btn btn-md btn-danger" ng-click="vm.deleteSelectedStoredData()"><i class="fa fa-trash-o"></i> Delete selected</a>
+
+
                 </div>
 
 

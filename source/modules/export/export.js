@@ -14,6 +14,7 @@
 
     vm.exportStoredData = exportStoredData;
     vm.exportSelectedStoredData = exportSelectedStoredData;
+    vm.deleteSelectedStoredData = deleteSelectedStoredData;
 
     vm.storedData = storedData();
     vm.toggleSelection = toggleSelection;
@@ -29,6 +30,12 @@
 
     function exportSelectedStoredData () {
         dataService.exportFromStoredData({ids: selectedIds});
+    }
+
+    function deleteSelectedStoredData () {
+        dataService.deleteFromStoredData({ids: selectedIds}).then(function(){
+            vm.storedData = storedData();
+        });
     }
 
     function toggleSelection(snapId) {
